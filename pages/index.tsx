@@ -3,9 +3,18 @@ import Head from 'next/head'
 import { AppHeader } from '~/components/AppHeader'
 import { SideMenu, SideMenuBar } from '~/components/SideMenuBar'
 import { Board } from '~/components/Board'
+import { Element } from '~/interfaces/element'
 
 export default function Index() {
   const [mode, setMode] = useState<SideMenu>('button')
+  const [elements, setElements] = useState<Element[]>([])
+
+  const addNewElement = (elm: Element) => {
+    const n  = [...elements, elm]
+    setElements(n);
+  }
+
+
   return (
     <>
       <div className="container">
@@ -21,7 +30,7 @@ export default function Index() {
             <SideMenuBar mode={mode} onChange={setMode} />
           </section>
           <section className="content">
-            <Board mode={mode} />
+            <Board mode={mode} elements={elements} onNewElement={addNewElement} />
           </section>
         </main>
 
