@@ -2,6 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   '@types/react': 17.0.14
+  clsx: ^1.1.1
   eslint: 7.30.0
   eslint-config-next: 11.0.1
   next: 11.0.1
@@ -10,6 +11,7 @@ specifiers:
   typescript: 4.3.5
 
 dependencies:
+  clsx: 1.1.1
   next: 11.0.1_f31b35bdaa3b7c2fce82404f09d2dac4
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
@@ -640,6 +642,11 @@ packages:
 
   /classnames/2.2.6:
     resolution: {integrity: sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==}
+    dev: false
+
+  /clsx/1.1.1:
+    resolution: {integrity: sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==}
+    engines: {node: '>=6'}
     dev: false
 
   /color-convert/1.9.3:
