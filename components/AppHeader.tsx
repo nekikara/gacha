@@ -1,11 +1,17 @@
 import React from 'react'
 
-export const AppHeader: React.VFC = () => {
+type Props = {
+  onCompile: () => void
+}
+export const AppHeader: React.VFC<Props> = ({ onCompile }) => {
+  const compile = () => {
+    onCompile()
+  }
   return (
     <>
       <header className="headerFrame">
         <nav className="navFrame">
-          <button type="button">
+          <button type="button" onClick={compile}>
             Compile
           </button>
         </nav>
