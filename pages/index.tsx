@@ -10,10 +10,33 @@ export default function Index() {
   const [elements, setElements] = useState<Element[]>([])
 
   const addNewElement = (elm: Element) => {
-    const n  = [...elements, elm]
+    const n = [...elements, elm]
     setElements(n);
   }
 
+  const handleCompile = async () => {
+    try {
+      const response = await fetch('/api/compile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ elements })
+      })
+      const json = await response.json()
+
+      const elem = document.createElement('a');
+      elem.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(json.html)}`);
+      elem.setAttribute('download', 'index.html');
+      elem.style.display = 'none';
+      document.body.appendChild(elem);
+      elem.click();
+      document.body.removeChild(elem);
+    } catch (error) {
+      console.error(error);
+      alert('Error')
+    }
+  }
 
   return (
     <>
@@ -24,7 +47,7 @@ export default function Index() {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <AppHeader />
+        <AppHeader onCompile={handleCompile} />
         <main className="main">
           <section className="menu">
             <SideMenuBar mode={mode} onChange={setMode} />
