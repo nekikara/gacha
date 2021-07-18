@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { SideMenu } from '~/components/SideMenuBar'
-import { Element, ElementName } from '~/interfaces/element'
+import { Element } from '~/interfaces/element'
+import { BoardItemContainer } from './BoardItemContainer'
+import { ElementTypeElement } from './ElementTypeElement'
 
 function calcElement(current: Element, clientPos: { y: number, x: number }, rect: Origin, origin: Origin) {
   const top = clientPos.y - rect.top
@@ -12,7 +14,7 @@ function calcElement(current: Element, clientPos: { y: number, x: number }, rect
 
   const elem: Element = {
     id: current.id,
-    name: current.name,
+    elementType: current.elementType,
     position: {
       top: newTop,
       left: newLeft
@@ -48,7 +50,7 @@ export const Board: React.VFC<Props> = ({ mode, elements, onNewElement }) => {
     setOrigin({ top, left })
     const elem: Element = {
       id: Date.now(),
-      name: mode === 'button' ? 'button' : 'div',
+      elementType: mode === 'button' ? { type: 'button', content: 'button' } : 'div',
       position: { top, left },
       width: 0,
       height: 0
@@ -86,9 +88,9 @@ export const Board: React.VFC<Props> = ({ mode, elements, onNewElement }) => {
       height: `${elem.height}px`
     }
     return (
-      <button key={elem.id} type="button" style={style}>
-        {elem.width > 0 && elem.height > 0 ? 'button' : ''}
-      </button>
+      <BoardItemContainer key={elem.id} style={style}>
+        <ElementTypeElement elementType={elem.elementType} />
+      </BoardItemContainer >
     )
   }
 

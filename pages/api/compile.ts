@@ -32,7 +32,12 @@ export default function handler(
         width: ${elem.width}px;
         height: ${elem.height}px
       `;
-      return `<button type="button" style="${styles}">button</button>`
+      if (elem.elementType === 'div') {
+        return `<div style="${styles}"></div>`
+      } else {
+        const buttonType = elem.elementType
+        return `<button type="${buttonType.type}" style="${styles}">${buttonType.content}</button>`
+      }
     });
 
     const htmlLast = `
