@@ -22,8 +22,8 @@ export const ElementTypeElement: React.VFC<Props> = ({ elementType }) => {
       style={{ width: '100%', height: '100%', userSelect: 'none' }}
       contentEditable={editable}
       onDoubleClick={toEditable}
+      dangerouslySetInnerHTML={{ __html: elementType.content }}
     >
-      {elementType.content}
     </button>
   )
 }
