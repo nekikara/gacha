@@ -38,6 +38,16 @@ export default function Index() {
     }
   }
 
+  const handleElementContentChange = (info: { id: string | Number, title: string }) => {
+    const newElements = elements.map(elem => {
+      if (elem.id === info.id && elem.elementType !== 'div') {
+        return { ...elem, elementType: { ...elem.elementType, content: info.title } }
+      }
+      return elem
+    })
+    setElements(newElements)
+  }
+
   return (
     <>
       <div className="container">
@@ -53,7 +63,12 @@ export default function Index() {
             <SideMenuBar mode={mode} onChange={setMode} />
           </section>
           <section className="content">
-            <Board mode={mode} elements={elements} onNewElement={addNewElement} />
+            <Board
+              mode={mode}
+              elements={elements}
+              onNewElement={addNewElement}
+              onElementContentChanged={handleElementContentChange}
+            />
           </section>
         </main>
 

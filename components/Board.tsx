@@ -35,9 +35,10 @@ type Props = {
   mode: SideMenu
   elements: Element[]
   onNewElement: (elem: Element) => void;
+  onElementContentChanged: (info: { id: string | number, title: string }) => void
 }
 
-export const Board: React.VFC<Props> = ({ mode, elements, onNewElement }) => {
+export const Board: React.VFC<Props> = ({ mode, elements, onNewElement, onElementContentChanged }) => {
   const [waiting, setWaiting] = useState<boolean>(true);
   const [mouseState, setMouseState] = useState<MouseState>('none');
   const [origin, setOrigin] = useState<Origin>({ top: 0, left: 0 })
@@ -99,6 +100,9 @@ export const Board: React.VFC<Props> = ({ mode, elements, onNewElement }) => {
           elementType={elem.elementType}
           onFocus={() => setWaiting(false)}
           onLeave={() => setWaiting(true)}
+          onChange={(title: string) => {
+            onElementContentChanged({ id: elem.id, title })
+          }}
         />
       </BoardItemContainer >
     )
