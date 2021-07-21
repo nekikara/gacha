@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { SideMenu } from '~/components/SideMenuBar'
-import { Element, ElementName } from '~/interfaces/element'
+import { Element } from '~/interfaces/element'
+import { BoardItemContainer } from './BoardItemContainer'
+import { ElementTypeElement } from './ElementTypeElement'
 
 function calcElement(current: Element, clientPos: { y: number, x: number }, rect: Origin, origin: Origin) {
   const top = clientPos.y - rect.top
@@ -12,7 +14,7 @@ function calcElement(current: Element, clientPos: { y: number, x: number }, rect
 
   const elem: Element = {
     id: current.id,
-    name: current.name,
+    elementType: current.elementType,
     position: {
       top: newTop,
       left: newLeft
@@ -33,14 +35,17 @@ type Props = {
   mode: SideMenu
   elements: Element[]
   onNewElement: (elem: Element) => void;
+  onElementContentChanged: (info: { id: string | number, title: string }) => void
 }
 
-export const Board: React.VFC<Props> = ({ mode, elements, onNewElement }) => {
+export const Board: React.VFC<Props> = ({ mode, elements, onNewElement, onElementContentChanged }) => {
+  const [waiting, setWaiting] = useState<boolean>(true);
   const [mouseState, setMouseState] = useState<MouseState>('none');
   const [origin, setOrigin] = useState<Origin>({ top: 0, left: 0 })
   const [element, setElement] = useState<Element | null>(null);
 
   const handleStart = (e: React.MouseEvent) => {
+    if (!waiting) return;
     setMouseState('started')
     const currentRect = e.currentTarget.getBoundingClientRect();
     const top = e.clientY - currentRect.top
@@ -48,7 +53,7 @@ export const Board: React.VFC<Props> = ({ mode, elements, onNewElement }) => {
     setOrigin({ top, left })
     const elem: Element = {
       id: Date.now(),
-      name: mode === 'button' ? 'button' : 'div',
+      elementType: mode === 'button' ? { type: 'button', content: 'button' } : 'div',
       position: { top, left },
       width: 0,
       height: 0
@@ -56,6 +61,7 @@ export const Board: React.VFC<Props> = ({ mode, elements, onNewElement }) => {
     setElement(elem);
   }
   const handleMove = (e: React.MouseEvent) => {
+    if (!waiting) return;
     if (mouseState === 'started') {
       setMouseState('moved')
     }
@@ -65,7 +71,9 @@ export const Board: React.VFC<Props> = ({ mode, elements, onNewElement }) => {
       setElement(elem)
     }
   }
+
   const handleEnd = (e: React.MouseEvent) => {
+    if (!waiting || mouseState === 'none') return;
     if (mouseState === 'started') {
       setElement(null);
     } else {
@@ -77,7 +85,7 @@ export const Board: React.VFC<Props> = ({ mode, elements, onNewElement }) => {
     setMouseState('none');
   }
 
-  const renderElement = (elem: Element) => {
+  const renderElement = (current: boolean, elem: Element) => {
     const style: React.CSSProperties = {
       position: 'absolute',
       top: elem.position.top,
@@ -86,23 +94,36 @@ export const Board: React.VFC<Props> = ({ mode, elements, onNewElement }) => {
       height: `${elem.height}px`
     }
     return (
-      <button key={elem.id} type="button" style={style}>
-        {elem.width > 0 && elem.height > 0 ? 'button' : ''}
-      </button>
+      <BoardItemContainer key={elem.id} style={style}>
+        <ElementTypeElement
+          current={current}
+          elementType={elem.elementType}
+          onFocus={() => setWaiting(false)}
+          onLeave={() => setWaiting(true)}
+          onChange={(title: string) => {
+            onElementContentChanged({ id: elem.id, title })
+          }}
+        />
+      </BoardItemContainer >
     )
   }
 
   const renderCurrent = () => {
     if (element) {
-      return renderElement(element)
+      return renderElement(true, element)
     }
   }
 
   return (
     <>
-      <div className="boardFrame" onMouseDown={handleStart} onMouseMove={handleMove} onMouseUp={handleEnd}>
+      <div
+        className="boardFrame"
+        onMouseDown={handleStart}
+        onMouseMove={handleMove}
+        onMouseUp={handleEnd}
+      >
         {elements.map((elem: Element) => {
-          return renderElement(elem)
+          return renderElement(false, elem)
         })}
         {renderCurrent()}
       </div>
