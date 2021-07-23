@@ -5,10 +5,13 @@ import { SideMenu, SideMenuBar } from '~/components/SideMenuBar'
 import { Board } from '~/components/Board'
 import { useElementDB } from '~/hooks/useElementDB'
 import { UUIDv4 } from '~/interfaces/element'
+import { StrutureBarBox } from '~/components/StructureBarBox'
+import { useLayoutSize } from '~/hooks/useLayoutSize'
 
 export default function Index() {
   const [mode, setMode] = useState<SideMenu>('button')
   const { elementCollection, addNewElement, updateElementContent } = useElementDB();
+  const layoutSize = useLayoutSize()
 
   const handleCompile = async () => {
     try {
@@ -52,6 +55,9 @@ export default function Index() {
           <section className="menu">
             <SideMenuBar mode={mode} onChange={setMode} />
           </section>
+          <section className="structureBar">
+            <StrutureBarBox onWidthChanged={layoutSize.changeStructureBarWidth} />
+          </section>
           <section className="content">
             <Board
               mode={mode}
@@ -75,6 +81,10 @@ export default function Index() {
         .menu {
           width: 50px;
           height: calc(100vh - 30px);
+        }
+        .structureBar {
+          height: calc(100vh - 30px);
+          width: ${layoutSize.structureBarWidth}px;
         }
         .content {
           flex: 1;
