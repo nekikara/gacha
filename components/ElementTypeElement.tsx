@@ -32,8 +32,11 @@ export const ElementTypeElement: React.VFC<Props> = ({ current, elementType, onF
     onChange(e.currentTarget.innerHTML)
   }
 
-  if (elementType === 'div') {
+  if (elementType.type === 'div') {
     return <div style={{ width: '100%', height: '100%' }}></div>
+  }
+  if (elementType.type === 'none') {
+    return null
   }
   return (
     <button
