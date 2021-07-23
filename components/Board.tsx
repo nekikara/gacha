@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { SideMenu } from '~/components/SideMenuBar'
-import { Element } from '~/interfaces/element'
+import { Element, genElement, UUIDv4 } from '~/interfaces/element'
+import { ElementCollection } from '~/interfaces/elementCollection'
 import { BoardItemContainer } from './BoardItemContainer'
 import { ElementTypeElement } from './ElementTypeElement'
 
@@ -33,12 +34,12 @@ type Origin = {
 
 type Props = {
   mode: SideMenu
-  elements: Element[]
+  elementCollection: ElementCollection
   onNewElement: (elem: Element) => void;
-  onElementContentChanged: (info: { id: string | number, title: string }) => void
+  onElementContentChanged: (info: { id: UUIDv4, title: string }) => void
 }
 
-export const Board: React.VFC<Props> = ({ mode, elements, onNewElement, onElementContentChanged }) => {
+export const Board: React.VFC<Props> = ({ mode, elementCollection, onNewElement, onElementContentChanged }) => {
   const [waiting, setWaiting] = useState<boolean>(true);
   const [mouseState, setMouseState] = useState<MouseState>('none');
   const [origin, setOrigin] = useState<Origin>({ top: 0, left: 0 })
@@ -51,12 +52,10 @@ export const Board: React.VFC<Props> = ({ mode, elements, onNewElement, onElemen
     const top = e.clientY - currentRect.top
     const left = e.clientX - currentRect.left
     setOrigin({ top, left })
+    const initializedElement = genElement(mode)
     const elem: Element = {
-      id: Date.now(),
-      elementType: mode === 'button' ? { type: 'button', content: 'button' } : 'div',
-      position: { top, left },
-      width: 0,
-      height: 0
+      ...initializedElement,
+      position: { top, left }
     }
     setElement(elem);
   }
@@ -122,8 +121,8 @@ export const Board: React.VFC<Props> = ({ mode, elements, onNewElement, onElemen
         onMouseMove={handleMove}
         onMouseUp={handleEnd}
       >
-        {elements.map((elem: Element) => {
-          return renderElement(false, elem)
+        {elementCollection.order.map((uuid: UUIDv4) => {
+          return renderElement(false, elementCollection.kv[uuid])
         })}
         {renderCurrent()}
       </div>

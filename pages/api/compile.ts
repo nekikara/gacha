@@ -1,5 +1,6 @@
+import { ElementCollection } from '~/interfaces/elementCollection';
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { Element } from '~/interfaces/element'
+import { UUIDv4 } from '~/interfaces/element'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 type Data = {
@@ -11,7 +12,7 @@ export default function handler(
   res: NextApiResponse<Data>
 ) {
   if (req.method === 'POST') {
-    const elements = req.body.elements
+    const elementCollection: ElementCollection = req.body.elementCollection
     const htmlFirst = `
 <!DOCTYPE html>
 <html lang="en">
@@ -24,7 +25,8 @@ export default function handler(
 <body>
 `;
 
-    const contents = elements.map((elem: Element) => {
+    const contents = elementCollection.order.map((elementId: UUIDv4) => {
+      const elem = elementCollection.kv[elementId]
       const styles = `
         position: absolute;
         top: ${elem.position.top}px;
@@ -32,8 +34,10 @@ export default function handler(
         width: ${elem.width}px;
         height: ${elem.height}px
       `;
-      if (elem.elementType === 'div') {
+      if (elem.elementType.type === 'div') {
         return `<div style="${styles}"></div>`
+      } else if (elem.elementType.type === 'none') {
+        return ''
       } else {
         const buttonType = elem.elementType
         return `<button type="${buttonType.type}" style="${styles}">${buttonType.content}</button>`

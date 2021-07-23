@@ -3,16 +3,12 @@ import Head from 'next/head'
 import { AppHeader } from '~/components/AppHeader'
 import { SideMenu, SideMenuBar } from '~/components/SideMenuBar'
 import { Board } from '~/components/Board'
-import { Element } from '~/interfaces/element'
+import { useElementDB } from '~/hooks/useElementDB'
+import { UUIDv4 } from '~/interfaces/element'
 
 export default function Index() {
   const [mode, setMode] = useState<SideMenu>('button')
-  const [elements, setElements] = useState<Element[]>([])
-
-  const addNewElement = (elm: Element) => {
-    const n = [...elements, elm]
-    setElements(n);
-  }
+  const { elementCollection, addNewElement, updateElementContent } = useElementDB();
 
   const handleCompile = async () => {
     try {
@@ -21,7 +17,7 @@ export default function Index() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ elements })
+        body: JSON.stringify({ elementCollection })
       })
       const json = await response.json()
 
@@ -38,14 +34,8 @@ export default function Index() {
     }
   }
 
-  const handleElementContentChange = (info: { id: string | Number, title: string }) => {
-    const newElements = elements.map(elem => {
-      if (elem.id === info.id && elem.elementType !== 'div') {
-        return { ...elem, elementType: { ...elem.elementType, content: info.title } }
-      }
-      return elem
-    })
-    setElements(newElements)
+  const handleElementContentChange = (info: { id: UUIDv4, title: string }) => {
+    updateElementContent(info)
   }
 
   return (
@@ -65,7 +55,7 @@ export default function Index() {
           <section className="content">
             <Board
               mode={mode}
-              elements={elements}
+              elementCollection={elementCollection}
               onNewElement={addNewElement}
               onElementContentChanged={handleElementContentChange}
             />
