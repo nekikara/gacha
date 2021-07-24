@@ -1,4 +1,4 @@
-import { UUIDv4 } from '~/interfaces/element';
+import { UUIDv4 } from '~/interfaces/uuidv4';
 import { Element } from "~/interfaces/element"
 import { useState } from 'react';
 import { ElementCollection } from '~/interfaces/elementCollection';

@@ -1,4 +1,5 @@
-import { Element, UUIDv4 } from '~/interfaces/element'
+import { Element } from '~/interfaces/element'
+import { UUIDv4 } from '~/interfaces/uuidv4';
 
 export type ElementCollection = {
   kv: Record<UUIDv4, Element>

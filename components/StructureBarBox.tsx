@@ -1,11 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { StructureBarResizer } from '~/components/StructureBarParts/StructureBarResizer'
+import { PlatformCollection } from '~/interfaces/platformCollection';
+import { ProjectStructureBox } from './StructureBarParts/ProjectStructureBox';
+
 
 type Props = {
+  platformCollection: PlatformCollection
   onWidthChanged: (width: number) => void
 }
 
-export const StructureBarBox: React.VFC<Props> = ({ onWidthChanged }) => {
+export const StructureBarBox: React.VFC<Props> = ({ platformCollection, onWidthChanged }) => {
   const [containerX, setContainerX] = useState<number>(0);
   const containerEl = useRef<HTMLDivElement | null>(null);
 
@@ -22,8 +26,8 @@ export const StructureBarBox: React.VFC<Props> = ({ onWidthChanged }) => {
         ref={containerEl}
         className="container"
       >
-        <div className="layers">
-          <h3>Projects</h3>
+        <div className="layer">
+          <ProjectStructureBox platformCollection={platformCollection} />
         </div>
         <div className="resizer">
           <StructureBarResizer
@@ -39,8 +43,9 @@ export const StructureBarBox: React.VFC<Props> = ({ onWidthChanged }) => {
           height: 100%;
           background-color: #555;
         }
-        .layers {
+        .layer {
           height: 100%;
+          width: 100%;
         }
         .resizer {
           position: absolute;

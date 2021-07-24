@@ -1,6 +1,6 @@
-import { v4 as uuidv4 } from 'uuid'
+import { genUUIDv4 } from '~/utils/uuidGen'
+import { UUIDv4 } from '~/interfaces/uuidv4'
 
-export type UUIDv4 = string;
 export type ElementType = ButtonType | DivType | NoneType
 
 export interface Element {
@@ -31,7 +31,7 @@ export interface DivType {
 export const genElement = (type: 'button' | 'div') => {
   const elementType = genElementType(type)
   return {
-    id: uuidv4(),
+    id: genUUIDv4(),
     elementType,
     position: {
       top: 0,
