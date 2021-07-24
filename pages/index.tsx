@@ -1,14 +1,24 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { AppHeader } from '~/components/AppHeader'
 import { SideMenu, SideMenuBar } from '~/components/SideMenuBar'
 import { Board } from '~/components/Board'
 import { useElementDB } from '~/hooks/useElementDB'
-import { UUIDv4 } from '~/interfaces/element'
+import { UUIDv4 } from '~/interfaces/uuidv4'
+import { StructureBarBox } from '~/components/StructureBarBox'
+import { useLayoutSize } from '~/hooks/useLayoutSize'
+import { usePlatformDB } from '~/hooks/usePlatformDB'
 
 export default function Index() {
   const [mode, setMode] = useState<SideMenu>('button')
   const { elementCollection, addNewElement, updateElementContent } = useElementDB();
+  const platformDB = usePlatformDB()
+  const layoutSize = useLayoutSize()
+
+  useEffect(() => {
+    const newPlatform = platformDB.genNewPlatform();
+    platformDB.addNewPlatform(newPlatform)
+  }, [])
 
   const handleCompile = async () => {
     try {
@@ -52,6 +62,15 @@ export default function Index() {
           <section className="menu">
             <SideMenuBar mode={mode} onChange={setMode} />
           </section>
+          <section
+            className="structureBar"
+            style={{ width: `${layoutSize.structureBarWidth}px` }}
+          >
+            <StructureBarBox
+              platformCollection={platformDB.platformCollection}
+              onWidthChanged={layoutSize.changeStructureBarWidth}
+            />
+          </section>
           <section className="content">
             <Board
               mode={mode}
@@ -74,6 +93,9 @@ export default function Index() {
         }
         .menu {
           width: 50px;
+          height: calc(100vh - 30px);
+        }
+        .structureBar {
           height: calc(100vh - 30px);
         }
         .content {
