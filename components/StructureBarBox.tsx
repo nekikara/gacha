@@ -24,55 +24,46 @@ export const StrutureBarBox: React.VFC<Props> = ({ onWidthChanged }) => {
     onWidthChanged(width)
   }
 
-  const handleDragStart = () => {
-    setLastWidthUpdateTime(() => Date.now())
-  }
-
-  const handleDrag = (e: React.MouseEvent) => {
-    const now = Date.now()
-    const diff = now - lastWidthUpdateTime
-    if (diff > 20 && e.clientX > 0) {
-      updateWidth(e.clientX)
-      setLastWidthUpdateTime(() => now)
-    }
-  }
-
-  const handleDragEnd = (e: React.MouseEvent) => {
-    updateWidth(e.clientX)
-  }
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setLastWidthUpdateTime(() => Date.now())
-    setDragState('started')
-  }
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    console.log('mouseMOve')
+  const move = (e: MouseEvent) => {
     if (dragState === 'started') {
       const now = Date.now()
       const diff = now - lastWidthUpdateTime
-      if (diff > 20 && e.clientX > 0) {
+      if (diff > 25) {
         updateWidth(e.clientX)
         setLastWidthUpdateTime(() => now)
       }
     }
   }
 
-  const handleMouseUp = (e: React.MouseEvent) => {
-    console.log('mouseup')
+  const up = (e: MouseEvent) => {
     if (dragState === 'started') {
       updateWidth(e.clientX)
     }
-    setDragState('none')
+    window.document.body.style.cursor = 'auto'
+    setDragState(() => 'none')
+    window.removeEventListener('mousemove', move)
   }
+
+  const handleMouseDown = () => {
+    window.document.body.style.cursor = 'ew-resize'
+    setLastWidthUpdateTime(() => Date.now())
+    setDragState(() => 'started')
+  }
+
+  useEffect(() => {
+    if (dragState === 'started') {
+      window.addEventListener('mousemove', move)
+      window.addEventListener('mouseup', up)
+    } else {
+      window.removeEventListener('mouseup', up)
+    }
+  }, [dragState])
 
   return (
     <>
       <div
         ref={containerEl}
         className="container"
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
       >
         <div className="layers">
           <h3>Projects</h3>
@@ -80,10 +71,6 @@ export const StrutureBarBox: React.VFC<Props> = ({ onWidthChanged }) => {
         <div
           className="handle"
           onMouseDown={handleMouseDown}
-        // onMouseLeave={handleMouseLeave}
-        // onDragStart={handleDragStart}
-        // onDrag={handleDrag}
-        // onDragEnd={handleDragEnd}
         >
         </div>
       </div>
