@@ -5,7 +5,7 @@ import { SideMenu, SideMenuBar } from '~/components/SideMenuBar'
 import { Board } from '~/components/Board'
 import { useElementDB } from '~/hooks/useElementDB'
 import { UUIDv4 } from '~/interfaces/element'
-import { StrutureBarBox } from '~/components/StructureBarBox'
+import { StructureBarBox } from '~/components/StructureBarBox'
 import { useLayoutSize } from '~/hooks/useLayoutSize'
 
 export default function Index() {
@@ -55,8 +55,11 @@ export default function Index() {
           <section className="menu">
             <SideMenuBar mode={mode} onChange={setMode} />
           </section>
-          <section className="structureBar">
-            <StrutureBarBox onWidthChanged={layoutSize.changeStructureBarWidth} />
+          <section
+            className="structureBar"
+            style={{ width: `${layoutSize.structureBarWidth}px` }}
+          >
+            <StructureBarBox onWidthChanged={layoutSize.changeStructureBarWidth} />
           </section>
           <section className="content">
             <Board
@@ -84,7 +87,6 @@ export default function Index() {
         }
         .structureBar {
           height: calc(100vh - 30px);
-          width: ${layoutSize.structureBarWidth}px;
         }
         .content {
           flex: 1;
