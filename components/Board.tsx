@@ -3,8 +3,8 @@ import { SideMenu } from '~/components/SideMenuBar'
 import { Element, genElement } from '~/interfaces/element'
 import { UUIDv4 } from '~/interfaces/uuidv4'
 import { ElementCollection } from '~/interfaces/elementCollection'
-import { BoardItemContainer } from './BoardItemContainer'
-import { ElementTypeElement } from './ElementTypeElement'
+import { BoardItemContainer } from './BoardParts/BoardItemContainer'
+import { ElementTypeElement } from './BoardParts/ElementTypeElement'
 
 function calcElement(current: Element, clientPos: { y: number, x: number }, rect: Origin, origin: Origin) {
   const top = clientPos.y - rect.top
