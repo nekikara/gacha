@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ElementType } from '~/interfaces/element'
+import { ElementType } from '~/components/BoardParts/element'
 
 type Props = {
   current: boolean

@@ -1,19 +1,46 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Head from 'next/head'
 import { AppHeader } from '~/components/AppHeader'
 import { SideMenu, SideMenuBar } from '~/components/SideMenuBar'
 import { Board } from '~/components/Board'
-import { useElementDB } from '~/hooks/useElementDB'
 import { UUIDv4 } from '~/interfaces/uuidv4'
 import { StructureBarBox } from '~/components/StructureBarBox'
 import { useLayoutSize } from '~/hooks/useLayoutSize'
 import { usePlatformDB } from '~/hooks/usePlatformDB'
+import { useHTMLTagDB } from '~/hooks/useHTMLTagDB'
+import { useKontaDB } from '~/hooks/useKontaDB'
+import { Element, ElementCollection } from '~/components/BoardParts/element'
+import { useButtonTagDB } from '~/hooks/useButtonTagDB'
+import { StylerSize } from '~/interfaces/styler'
+import { useStylerDB } from '~/hooks/useStylerDB'
 
 export default function Index() {
   const [mode, setMode] = useState<SideMenu>('button')
-  const { elementCollection, addNewElement, updateElementContent } = useElementDB();
+  const stylerDB = useStylerDB()
+  const buttonTagDB = useButtonTagDB()
+  const htmlTagDB = useHTMLTagDB()
   const platformDB = usePlatformDB()
+  const kontaDB = useKontaDB()
   const layoutSize = useLayoutSize()
+  const elementCollection = useMemo(() => {
+    const htmlTagC = htmlTagDB.htmlTagCollection
+    const elms = htmlTagC.order.reduce((acc: ElementCollection, uuid: UUIDv4) => {
+      const htmlTag = htmlTagC.kv[uuid]
+      const buttonTag = buttonTagDB.buttonTagCollection.kv[htmlTag.tagObj.id]
+      const styler = stylerDB.stylerCollection.kv[htmlTag.styler.id]
+      acc.kv[uuid] = {
+        id: uuid,
+        elementType: { type: buttonTag.tagType, content: buttonTag.content },
+        position: styler.position,
+        width: styler.width,
+        height: styler.height
+      }
+      acc.order.push(uuid)
+      return acc
+    }, { kv: {}, order: [] })
+    return elms as ElementCollection
+
+  }, [htmlTagDB, buttonTagDB, stylerDB])
 
   useEffect(() => {
     const newPlatform = platformDB.genNewPlatform();
@@ -44,8 +71,23 @@ export default function Index() {
     }
   }
 
+  const handleNewElement = (elm: Element) => {
+    if (elm.elementType.type === 'button') {
+      const buttonTag = buttonTagDB.genNewButtonTag(elm.elementType.content)
+      buttonTagDB.addNewButtonTag(buttonTag)
+      const stylerSize: StylerSize = {
+        position: elm.position,
+        height: elm.height,
+        width: elm.width,
+      }
+      const styler = stylerDB.genNewStyler(stylerSize)
+      stylerDB.addNewStyler(styler)
+      const htmlTag = htmlTagDB.genNewHTMLTag(buttonTag, styler)
+      htmlTagDB.addNewHTMLTag(htmlTag)
+    }
+  }
   const handleElementContentChange = (info: { id: UUIDv4, title: string }) => {
-    updateElementContent(info)
+    console.log('new element', info)
   }
 
   return (
@@ -75,7 +117,7 @@ export default function Index() {
             <Board
               mode={mode}
               elementCollection={elementCollection}
-              onNewElement={addNewElement}
+              onNewElement={handleNewElement}
               onElementContentChanged={handleElementContentChange}
             />
           </section>

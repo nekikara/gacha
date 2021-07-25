@@ -1,3 +1,4 @@
+import { CollectionBase } from '../../interfaces/collectionBase';
 import { genUUIDv4 } from '~/utils/uuidGen'
 import { UUIDv4 } from '~/interfaces/uuidv4'
 
@@ -27,6 +28,8 @@ export interface DivType {
   type: 'div',
   content: ElementType | ElementType[]
 }
+
+export type ElementCollection = CollectionBase<Element>
 
 export const genElement = (type: 'button' | 'div') => {
   const elementType = genElementType(type)
