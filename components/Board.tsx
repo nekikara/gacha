@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { SideMenu } from '~/components/SideMenuBar'
-import { Element, genElement, UUIDv4 } from '~/interfaces/element'
+import { Element, genElement } from '~/interfaces/element'
+import { UUIDv4 } from '~/interfaces/uuidv4'
 import { ElementCollection } from '~/interfaces/elementCollection'
 import { BoardItemContainer } from './BoardItemContainer'
 import { ElementTypeElement } from './ElementTypeElement'
