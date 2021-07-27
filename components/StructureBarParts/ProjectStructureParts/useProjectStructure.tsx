@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { PlatformCollection } from '~/interfaces/platformCollection';
+import { PlatformCollection } from '~/interfaces/platform';
 import { UUIDv4 } from '~/interfaces/uuidv4';
 import { ProjectLayerItem } from './ProjectLayer'
 

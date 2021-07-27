@@ -1,5 +1,5 @@
 import React from 'react'
-import { PlatformCollection } from '~/interfaces/platformCollection'
+import { PlatformCollection } from '~/interfaces/platform'
 import { ProjectLayerItem } from './ProjectStructureParts/ProjectLayer'
 import { ProjectLayerUL } from './ProjectStructureParts/ProjectLayerUL'
 import { ProjectLayerLI } from './ProjectStructureParts/ProjectLayerLI'

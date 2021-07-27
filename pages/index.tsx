@@ -47,6 +47,8 @@ export default function Index() {
   useEffect(() => {
     const newPlatform = platformDB.genNewPlatform();
     platformDB.addNewPlatform(newPlatform)
+    const newKonta = kontaDB.genNewKonta(newPlatform, 0)
+    kontaDB.addNewKonta(newKonta)
   }, [])
 
   const handleCompile = async () => {
@@ -86,6 +88,11 @@ export default function Index() {
       stylerDB.addNewStyler(styler)
       const htmlTag = htmlTagDB.genNewHTMLTag(buttonTag, styler)
       htmlTagDB.addNewHTMLTag(htmlTag)
+      const platformId = platformDB.platformCollection.order[0]
+      const platform = platformDB.platformCollection.kv[platformId]
+      const parentKonta = kontaDB.findKonta({kontaObjectId: platform.id, kontaObjectType: 'platform'})
+      const newKonta = kontaDB.genNewKonta(htmlTag, Number(parentKonta?.level))
+      kontaDB.addNewKonta(newKonta, parentKonta)
     }
   }
   const handleElementContentChange = (info: { id: UUIDv4, title: string }) => {

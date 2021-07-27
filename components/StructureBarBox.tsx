@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { StructureBarResizer } from '~/components/StructureBarParts/StructureBarResizer'
-import { PlatformCollection } from '~/interfaces/platformCollection';
+import { PlatformCollection } from '~/interfaces/platform';
 import { ProjectStructureBox } from './StructureBarParts/ProjectStructureBox';
 
 
