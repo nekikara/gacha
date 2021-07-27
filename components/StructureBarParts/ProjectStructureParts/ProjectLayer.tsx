@@ -1,5 +1,6 @@
 import React from 'react'
 import { UUIDv4 } from '~/interfaces/uuidv4'
+import { ProjectStructureBox } from '../ProjectStructureBox'
 
 export type ProjectLayerItem = {
   id: UUIDv4

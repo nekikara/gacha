@@ -48,7 +48,7 @@ export default function Index() {
     const newPlatform = platformDB.genNewPlatform();
     platformDB.addNewPlatform(newPlatform)
     const newKonta = kontaDB.genNewKonta(newPlatform, 0)
-    kontaDB.addNewKonta(newKonta)
+    kontaDB.addNewKonta(newKonta, null)
   }, [])
 
   const handleCompile = async () => {
@@ -91,7 +91,7 @@ export default function Index() {
       const platformId = platformDB.platformCollection.order[0]
       const platform = platformDB.platformCollection.kv[platformId]
       const parentKonta = kontaDB.findKonta({kontaObjectId: platform.id, kontaObjectType: 'platform'})
-      const newKonta = kontaDB.genNewKonta(htmlTag, Number(parentKonta?.level))
+      const newKonta = kontaDB.genNewKonta(htmlTag, Number(parentKonta?.level) + 1)
       kontaDB.addNewKonta(newKonta, parentKonta)
     }
   }
@@ -118,7 +118,9 @@ export default function Index() {
             style={{ width: `${layoutSize.structureBarWidth}px` }}
           >
             <StructureBarBox
+              kontaCollection={kontaDB.kontaCollection}
               platformCollection={platformDB.platformCollection}
+              htmlTagCollection={htmlTagDB.htmlTagCollection}
               onWidthChanged={layoutSize.changeStructureBarWidth}
             />
           </section>
