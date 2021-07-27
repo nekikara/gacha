@@ -13,15 +13,19 @@ function calcElement(current: Element, clientPos: { y: number, x: number }, rect
   const width = Math.abs(origin.left - left)
   const height = Math.abs(origin.top - top)
 
-  const elem: Element = {
-    id: current.id,
-    elementType: current.elementType,
+  const styleInfo = {
     position: {
       top: newTop,
       left: newLeft
     },
     width: width,
     height: height
+  }
+
+  const elem: Element = {
+    id: current.id,
+    elementType: current.elementType,
+    styleInfo
   }
   return elem
 }
@@ -55,7 +59,11 @@ export const Board: React.VFC<Props> = ({ mode, elementCollection, onNewElement,
     const initializedElement = genElement(mode)
     const elem: Element = {
       ...initializedElement,
-      position: { top, left }
+      styleInfo: {
+        position: { top, left },
+        width: initializedElement.styleInfo.width,
+        height: initializedElement.styleInfo.height
+      }
     }
     setElement(elem);
   }
@@ -87,10 +95,10 @@ export const Board: React.VFC<Props> = ({ mode, elementCollection, onNewElement,
   const renderElement = (current: boolean, elem: Element) => {
     const style: React.CSSProperties = {
       position: 'absolute',
-      top: elem.position.top,
-      left: elem.position.left,
-      width: `${elem.width}px`,
-      height: `${elem.height}px`
+      top: elem.styleInfo.position.top,
+      left: elem.styleInfo.position.left,
+      width: `${elem.styleInfo.width}px`,
+      height: `${elem.styleInfo.height}px`
     }
     return (
       <BoardItemContainer key={elem.id} style={style}>

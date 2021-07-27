@@ -1,4 +1,4 @@
-import { CollectionBase } from '../../interfaces/collectionBase';
+import { CollectionBase } from '~/interfaces/collectionBase';
 import { genUUIDv4 } from '~/utils/uuidGen'
 import { UUIDv4 } from '~/interfaces/uuidv4'
 
@@ -7,12 +7,7 @@ export type ElementType = ButtonType | DivType | NoneType
 export interface Element {
   id: UUIDv4,
   elementType: ElementType,
-  position: {
-    top: number,
-    left: number
-  }
-  width: number
-  height: number
+  styleInfo: StyleInfo
 }
 
 export interface ButtonType {
@@ -33,15 +28,11 @@ export type ElementCollection = CollectionBase<Element>
 
 export const genElement = (type: 'button' | 'div') => {
   const elementType = genElementType(type)
+  const styleInfo = genInitialStyleInfo()
   return {
     id: genUUIDv4(),
     elementType,
-    position: {
-      top: 0,
-      left: 0
-    },
-    width: 0,
-    height: 0
+    styleInfo
   }
 }
 
@@ -62,3 +53,21 @@ const genElementType = (type: 'button' | 'div'): ElementType => {
   }
 
 }
+
+export type StyleInfo = {
+  position: {
+    top: number,
+    left: number
+  },
+  width: number,
+  height: number
+}
+
+const genInitialStyleInfo = (): StyleInfo => ({
+  position: {
+    top: 0,
+    left: 0
+  },
+  width: 0,
+  height: 0
+})

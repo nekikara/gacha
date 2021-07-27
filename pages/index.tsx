@@ -31,9 +31,11 @@ export default function Index() {
       acc.kv[uuid] = {
         id: uuid,
         elementType: { type: buttonTag.tagType, content: buttonTag.content },
-        position: styler.position,
-        width: styler.width,
-        height: styler.height
+        styleInfo: {
+          position: styler.position,
+          width: styler.width,
+          height: styler.height
+        }
       }
       acc.order.push(uuid)
       return acc
@@ -76,9 +78,9 @@ export default function Index() {
       const buttonTag = buttonTagDB.genNewButtonTag(elm.elementType.content)
       buttonTagDB.addNewButtonTag(buttonTag)
       const stylerSize: StylerSize = {
-        position: elm.position,
-        height: elm.height,
-        width: elm.width,
+        position: elm.styleInfo.position,
+        height: elm.styleInfo.height,
+        width: elm.styleInfo.width,
       }
       const styler = stylerDB.genNewStyler(stylerSize)
       stylerDB.addNewStyler(styler)
@@ -87,7 +89,7 @@ export default function Index() {
     }
   }
   const handleElementContentChange = (info: { id: UUIDv4, title: string }) => {
-    console.log('new element', info)
+    console.log('update element', info)
   }
 
   return (
