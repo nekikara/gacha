@@ -13,7 +13,6 @@ export const ProjectLayerLI: React.VFC<Props> = ({ children }) => {
       <style jsx>{`
         .projectLayerLIFrame {
           width: 100%;
-          height: 100%;
         }
       `}</style>
     </>

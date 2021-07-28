@@ -1,6 +1,6 @@
-import { ElementCollection } from '~/interfaces/elementCollection';
+import { ElementCollection } from '~/components/BoardParts/element';
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { UUIDv4 } from '~/interfaces/element'
+import { UUIDv4 } from '~/interfaces/uuidv4'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 type Data = {

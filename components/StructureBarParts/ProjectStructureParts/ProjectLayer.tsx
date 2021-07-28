@@ -1,5 +1,6 @@
 import React from 'react'
 import { UUIDv4 } from '~/interfaces/uuidv4'
+import { ProjectStructureBox } from '../ProjectStructureBox'
 
 export type ProjectLayerItem = {
   id: UUIDv4
@@ -31,7 +32,8 @@ export const ProjectLayer: React.VFC<Props> = ({ layer }) => {
           color: #bbb;
         }
         .projectLayerFrame:hover {
-          background-color: rgba(255, 255, 255, 0.5);
+          background-color: rgba(255, 255, 255, 0.1);
+          cursor: pointer;
         }
         .projectLayerInfo {
           padding: 5px 0;
