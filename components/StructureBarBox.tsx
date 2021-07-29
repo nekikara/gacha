@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { StructureBarResizer } from '~/components/StructureBarParts/StructureBarResizer'
 import { HTMLTagCollection } from '~/interfaces/htmlTag';
-import { KontaCollection, KontaObject, KontaObjectType } from '~/interfaces/konta';
+import { KontaCollection, KontaID, KontaObject, KontaObjectType } from '~/interfaces/konta';
 import { PlatformCollection } from '~/interfaces/platform';
 import { UUIDv4 } from '~/interfaces/uuidv4';
 import { ProjectStructureBox } from './StructureBarParts/ProjectStructureBox';
@@ -9,13 +9,17 @@ import { ProjectLayerItem } from './StructureBarParts/ProjectStructureParts/Proj
 
 
 type Props = {
+  activeKontaId: KontaID
   kontaCollection: KontaCollection
   platformCollection: PlatformCollection
   htmlTagCollection: HTMLTagCollection
   onWidthChanged: (width: number) => void
+  onActiveKontaChange: (kontaId: KontaID) => void
 }
 
-export const StructureBarBox: React.VFC<Props> = ({ kontaCollection, platformCollection, htmlTagCollection, onWidthChanged }) => {
+export const StructureBarBox: React.VFC<Props> = ({
+  activeKontaId, kontaCollection, platformCollection, htmlTagCollection, onWidthChanged, onActiveKontaChange
+}) => {
   const [containerX, setContainerX] = useState<number>(0);
   const containerEl = useRef<HTMLDivElement | null>(null);
   const [layers, setLayers] = useState<ProjectLayerItem[]>([])
@@ -28,28 +32,29 @@ export const StructureBarBox: React.VFC<Props> = ({ kontaCollection, platformCol
   }, [containerEl])
 
   useEffect(() => {
-    function findKontaObject(obj: {id: UUIDv4, type: KontaObjectType}): KontaObject {
+    function findKontaObject(obj: { id: UUIDv4, type: KontaObjectType }): KontaObject {
       if (obj.type === 'platform') {
         return platformCollection.kv[obj.id]
       } else {
         return htmlTagCollection.kv[obj.id]
       }
     }
-    function assembleLayer(kontaId: UUIDv4): ProjectLayerItem {
+    function assembleLayer(kontaId: KontaID): ProjectLayerItem {
       const konta = kontaCollection.records[kontaId]
       const kontaObject = findKontaObject(konta.obj)
-      const children = konta.children.map((kontaId: UUIDv4) => assembleLayer(kontaId))
+      const children = konta.children.map((kontaId: KontaID) => assembleLayer(kontaId))
       return {
         id: kontaId,
+        active: kontaId === activeKontaId,
         name: kontaObject.name,
         horizontalLevel: konta.level,
         children
       }
     }
-    const layers = kontaCollection.entries.map((kontaId: UUIDv4) => assembleLayer(kontaId))
+    const layers = kontaCollection.entries.map((kontaId: KontaID) => assembleLayer(kontaId))
     setLayers(() => layers)
 
-  }, [kontaCollection, platformCollection, htmlTagCollection])
+  }, [activeKontaId, kontaCollection, platformCollection, htmlTagCollection])
 
   return (
     <>
@@ -58,7 +63,10 @@ export const StructureBarBox: React.VFC<Props> = ({ kontaCollection, platformCol
         className="container"
       >
         <div className="layer">
-          <ProjectStructureBox projectLayers={layers} />
+          <ProjectStructureBox
+            projectLayers={layers}
+            onSelectedLayerChange={onActiveKontaChange}
+          />
         </div>
         <div className="resizer">
           <StructureBarResizer

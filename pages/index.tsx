@@ -14,6 +14,8 @@ import { useButtonTagDB } from '~/hooks/useButtonTagDB'
 import { StylerSize } from '~/interfaces/styler'
 import { useStylerDB } from '~/hooks/useStylerDB'
 import { EditorZone } from '~/components/EditorZone'
+import { useActiveKontaHistoryDB } from '~/hooks/useActiveKontaHistoryDB '
+import { KontaID } from '~/interfaces/konta'
 
 export default function Index() {
   const [mode, setMode] = useState<SideMenu>('button')
@@ -22,6 +24,7 @@ export default function Index() {
   const htmlTagDB = useHTMLTagDB()
   const platformDB = usePlatformDB()
   const kontaDB = useKontaDB()
+  const activeKontaHistoryDB = useActiveKontaHistoryDB()
   const layoutSize = useLayoutSize()
   const elementCollection = useMemo(() => {
     const htmlTagC = htmlTagDB.htmlTagCollection
@@ -50,6 +53,7 @@ export default function Index() {
     platformDB.addNewPlatform(newPlatform)
     const newKonta = kontaDB.genNewKonta(newPlatform, 0)
     kontaDB.addNewKonta(newKonta, null)
+    activeKontaHistoryDB.addNew(newKonta.id)
   }, [])
 
   const handleCompile = async () => {
@@ -91,13 +95,16 @@ export default function Index() {
       htmlTagDB.addNewHTMLTag(htmlTag)
       const platformId = platformDB.platformCollection.order[0]
       const platform = platformDB.platformCollection.kv[platformId]
-      const parentKonta = kontaDB.findKonta({kontaObjectId: platform.id, kontaObjectType: 'platform'})
+      const parentKonta = kontaDB.findKonta({ kontaObjectId: platform.id, kontaObjectType: 'platform' })
       const newKonta = kontaDB.genNewKonta(htmlTag, Number(parentKonta?.level) + 1)
       kontaDB.addNewKonta(newKonta, parentKonta)
     }
   }
   const handleElementContentChange = (info: { id: UUIDv4, title: string }) => {
     console.log('update element', info)
+  }
+  const handleActiveKontaChange = (kontaId: KontaID) => {
+    activeKontaHistoryDB.addNew(kontaId)
   }
 
   return (
@@ -119,10 +126,12 @@ export default function Index() {
             style={{ width: `${layoutSize.structureBarWidth}px` }}
           >
             <StructureBarBox
+              activeKontaId={activeKontaHistoryDB.latest}
               kontaCollection={kontaDB.kontaCollection}
               platformCollection={platformDB.platformCollection}
               htmlTagCollection={htmlTagDB.htmlTagCollection}
               onWidthChanged={layoutSize.changeStructureBarWidth}
+              onActiveKontaChange={handleActiveKontaChange}
             />
           </section>
           <section className="content">

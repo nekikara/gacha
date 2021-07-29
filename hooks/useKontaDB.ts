@@ -19,7 +19,7 @@ export const useKontaDB = () => {
       const newEntries = (konta.level === 0) ? entries.concat(konta.id) : entries
       setKontaCollection(() => ({ records, entries: newEntries }))
     },
-    findKonta: (info: {kontaObjectId: UUIDv4, kontaObjectType: KontaObjectType}): Konta | null => {
+    findKonta: (info: { kontaObjectId: UUIDv4, kontaObjectType: KontaObjectType }): Konta | null => {
       let konta = null
       for (let x in kontaCollection.records) {
         const k = kontaCollection.records[x] as Konta
