@@ -13,6 +13,7 @@ import { Element, ElementCollection } from '~/components/BoardParts/element'
 import { useButtonTagDB } from '~/hooks/useButtonTagDB'
 import { StylerSize } from '~/interfaces/styler'
 import { useStylerDB } from '~/hooks/useStylerDB'
+import { EditorZone } from '~/components/EditorZone'
 
 export default function Index() {
   const [mode, setMode] = useState<SideMenu>('button')
@@ -125,6 +126,7 @@ export default function Index() {
             />
           </section>
           <section className="content">
+            <EditorZone />
             <Board
               mode={mode}
               elementCollection={elementCollection}
@@ -139,6 +141,7 @@ export default function Index() {
         .container {
           min-height: 100vh;
           height: 100vh;
+          max-height: 100vh;
         }
         .main {
           display: flex;
@@ -153,10 +156,6 @@ export default function Index() {
         }
         .content {
           flex: 1;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          padding: 50px;
         }
       `}</style>
     </>
