@@ -1,8 +1,9 @@
 import { UUIDv4 } from '~/interfaces/uuidv4';
 import { CollectionBase } from './collectionBase';
 
+export type PlatformID = UUIDv4
 export interface Platform {
-  id: UUIDv4,
+  id: PlatformID,
   kontaObjectType: 'platform',
   name: string,
 }
