@@ -1,4 +1,4 @@
-import { KontaObjectType } from './../interfaces/konta';
+import { KontaObjectType, KontaID } from './../interfaces/konta';
 import { UUIDv4 } from '~/interfaces/uuidv4';
 import { useState } from 'react';
 import { Konta, KontaObject, KontaCollection } from '~/interfaces/konta';
@@ -18,6 +18,9 @@ export const useKontaDB = () => {
       const entries = kontaCollection.entries
       const newEntries = (konta.level === 0) ? entries.concat(konta.id) : entries
       setKontaCollection(() => ({ records, entries: newEntries }))
+    },
+    findKontaById: (kontaId: KontaID): Konta | null => {
+      return kontaCollection.records[kontaId]
     },
     findKonta: (info: { kontaObjectId: UUIDv4, kontaObjectType: KontaObjectType }): Konta | null => {
       let konta = null

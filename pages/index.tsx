@@ -15,10 +15,11 @@ import { StylerSize } from '~/interfaces/styler'
 import { useStylerDB } from '~/hooks/useStylerDB'
 import { EditorZone } from '~/components/EditorZone'
 import { useActiveKontaHistoryDB } from '~/hooks/useActiveKontaHistoryDB '
-import { KontaID } from '~/interfaces/konta'
+import { KontaID, KontaObject } from '~/interfaces/konta'
 
 export default function Index() {
   const [mode, setMode] = useState<SideMenu>('button')
+  const [activeKontaObject, setKontaObject] = useState<KontaObject | null>(null)
   const stylerDB = useStylerDB()
   const buttonTagDB = useButtonTagDB()
   const htmlTagDB = useHTMLTagDB()
@@ -55,6 +56,20 @@ export default function Index() {
     kontaDB.addNewKonta(newKonta, null)
     activeKontaHistoryDB.addNew(newKonta.id)
   }, [])
+
+  useEffect(() => {
+    const konta = kontaDB.findKontaById(activeKontaHistoryDB.latest)
+    let kontaObj: KontaObject | null = null;
+    switch (konta?.obj.type) {
+      case 'platform':
+        kontaObj = platformDB.platformCollection.kv[konta.obj.id]
+        break;
+      case 'html_tag':
+        kontaObj = htmlTagDB.htmlTagCollection.kv[konta.obj.id]
+        break;
+    }
+    setKontaObject(() => kontaObj)
+  }, [kontaDB, activeKontaHistoryDB.latest, platformDB.platformCollection.kv, htmlTagDB.htmlTagCollection.kv])
 
   const handleCompile = async () => {
     try {
@@ -135,7 +150,7 @@ export default function Index() {
             />
           </section>
           <section className="content">
-            <EditorZone />
+            <EditorZone activeKontaObject={activeKontaObject} />
             <Board
               mode={mode}
               elementCollection={elementCollection}

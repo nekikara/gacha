@@ -1,12 +1,15 @@
 import React from 'react'
+import { KontaObject } from '~/interfaces/konta'
 
-type Props = {}
+type Props = {
+  activeKontaObject: KontaObject | null
+}
 
-export const EditorZone: React.VFC<Props> = ({ }) => {
+export const EditorZone: React.VFC<Props> = ({ activeKontaObject }) => {
   return (
     <>
       <div className="editorFrame">
-        EditorZone
+        {activeKontaObject?.name}
       </div>
       <style jsx>{`
         .editorFrame {
