@@ -151,12 +151,12 @@ export default function Index() {
           </section>
           <section className="content">
             <EditorZone activeKontaObject={activeKontaObject} />
-            <Board
+            {/* <Board
               mode={mode}
               elementCollection={elementCollection}
               onNewElement={handleNewElement}
               onElementContentChanged={handleElementContentChange}
-            />
+            /> */}
           </section>
         </main>
 
