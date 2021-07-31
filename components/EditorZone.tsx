@@ -17,36 +17,32 @@ interface PaneObjCollection {
 }
 
 type Props = {
+  width: number
   activeKontaObject: KontaObject | null
 }
 
-export const EditorZone: React.VFC<Props> = ({ activeKontaObject }) => {
+export const EditorZone: React.VFC<Props> = ({ width, activeKontaObject }) => {
   const [panes, setPanes] = useState<PaneObjCollection>({ kv: {}, order: [] });
-  const containerEl = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (containerEl.current) {
-      const rect = containerEl.current.getBoundingClientRect()
-      const { width } = rect
-      const paneNum = 1
-      const halfW = width / paneNum;
+    const paneNum = 1
+    const halfW = width / paneNum;
 
-      const kv = panes.kv
-      const newOrder = []
-      for (let i = 0; i < paneNum; i++) {
-        const obj = {
-          id: genUUIDv4(),
-          index: i,
-          x: halfW * i,
-          w: halfW
-        }
-        kv[obj.id] = obj
-        newOrder.push(obj.id)
+    const kv = panes.kv
+    const newOrder = []
+    for (let i = 0; i < paneNum; i++) {
+      const obj = {
+        id: genUUIDv4(),
+        index: i,
+        x: halfW * i,
+        w: halfW
       }
-
-      setPanes({ kv, order: newOrder })
+      kv[obj.id] = obj
+      newOrder.push(obj.id)
     }
-  }, [containerEl])
+
+    setPanes({ kv, order: newOrder })
+  }, [width, panes.kv])
 
   const genResizeEventHandler = (index: number) => {
     return (info: { x: number, y: number }) => {
@@ -69,10 +65,9 @@ export const EditorZone: React.VFC<Props> = ({ activeKontaObject }) => {
     }
   }
 
-
   return (
     <>
-      <div ref={containerEl} className="editorFrame">
+      <div className="editorFrame">
         {panes.order.map((paneId: PaneID) => {
           const paneObj = panes.kv[paneId]
           return (

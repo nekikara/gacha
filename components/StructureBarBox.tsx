@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { StructureBarResizer } from '~/components/StructureBarParts/StructureBarResizer'
 import { HTMLTagCollection } from '~/interfaces/htmlTag';
 import { KontaCollection, KontaID, KontaObject, KontaObjectType } from '~/interfaces/konta';
 import { PlatformCollection } from '~/interfaces/platform';
 import { UUIDv4 } from '~/interfaces/uuidv4';
+import { ResizeEmitter } from './shared/ResizeEmitter';
 import { ProjectStructureBox } from './StructureBarParts/ProjectStructureBox';
 import { ProjectLayerItem } from './StructureBarParts/ProjectStructureParts/ProjectLayer';
 
@@ -13,7 +13,7 @@ type Props = {
   kontaCollection: KontaCollection
   platformCollection: PlatformCollection
   htmlTagCollection: HTMLTagCollection
-  onWidthChanged: (width: number) => void
+  onWidthChanged: (diff: { x: number, y: number }) => void
   onActiveKontaChange: (kontaId: KontaID) => void
 }
 
@@ -56,6 +56,11 @@ export const StructureBarBox: React.VFC<Props> = ({
 
   }, [activeKontaId, kontaCollection, platformCollection, htmlTagCollection])
 
+  const handleWidthChange = (diff: { x: number, y: number }) => {
+    console.log(diff)
+    onWidthChanged(diff)
+  }
+
   return (
     <>
       <div
@@ -69,10 +74,7 @@ export const StructureBarBox: React.VFC<Props> = ({
           />
         </div>
         <div className="resizer">
-          <StructureBarResizer
-            originX={containerX}
-            onWidthChanged={onWidthChanged}
-          />
+          <ResizeEmitter onBarMove={onWidthChanged} />
         </div>
       </div>
       <style jsx>{`

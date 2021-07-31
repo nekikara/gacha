@@ -132,13 +132,16 @@ export default function Index() {
         </Head>
 
         <AppHeader onCompile={handleCompile} />
-        <main className="main">
-          <section className="menu">
+        <main ref={layoutSize.appContainerEl} className="main">
+          <section
+            className="menu"
+            style={{ width: `${layoutSize.layoutWidth.teamBox}px` }}
+          >
             <SideMenuBar mode={mode} onChange={setMode} />
           </section>
           <section
             className="structureBar"
-            style={{ width: `${layoutSize.structureBarWidth}px` }}
+            style={{ width: `${layoutSize.layoutWidth.structureBox}px` }}
           >
             <StructureBarBox
               activeKontaId={activeKontaHistoryDB.latest}
@@ -150,7 +153,10 @@ export default function Index() {
             />
           </section>
           <section className="content">
-            <EditorZone activeKontaObject={activeKontaObject} />
+            <EditorZone
+              width={layoutSize.layoutWidth.editorBox}
+              activeKontaObject={activeKontaObject}
+            />
             {/* <Board
               mode={mode}
               elementCollection={elementCollection}
@@ -170,9 +176,9 @@ export default function Index() {
         .main {
           display: flex;
           flex-direction: row;
+          overflow: hidden;
         }
         .menu {
-          width: 50px;
           height: calc(100vh - 30px);
         }
         .structureBar {

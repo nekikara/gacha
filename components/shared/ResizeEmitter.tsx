@@ -26,7 +26,7 @@ export const ResizeEmitter: React.VFC<Props> = ({ onBarMove }) => {
     const move = (e: MouseEvent) => {
       const now = Date.now()
       const diff = now - lastWidthUpdatedTime
-      if (diff > 80) {
+      if (diff > 30) {
         emitMoving(e.clientX)
         lastWidthUpdatedTime = now;
       }
