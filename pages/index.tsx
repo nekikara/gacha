@@ -156,6 +156,7 @@ export default function Index() {
             <EditorZone
               width={layoutSize.layoutWidth.editorBox}
               activeKontaObject={activeKontaObject}
+              paneObjCollection={layoutSize.layoutWidth.paneObjCollection}
             />
             {/* <Board
               mode={mode}

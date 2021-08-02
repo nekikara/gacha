@@ -1,17 +1,15 @@
-import { PlatformID } from './platform';
 import { UUIDv4 } from '~/interfaces/uuidv4'
-import { KontaID } from './konta';
 
 export type PaneID = UUIDv4
 
-export interface Pane {
+export interface PaneObj {
   id: PaneID
-  tabs: Tab[]
+  index: number
+  x: number,
+  w: number,
 }
 
-export type TabID = UUIDv4
-export interface Tab {
-  id: TabID
-  kontaId: KontaID
-  platformId: PlatformID
+export interface PaneObjCollection {
+  kv: Record<PaneID, PaneObj>
+  order: PaneID[]
 }

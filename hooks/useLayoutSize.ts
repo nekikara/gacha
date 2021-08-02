@@ -1,9 +1,11 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
+import { PaneObjCollection } from '~/interfaces/pane';
 
 interface LayoutWidth {
   teamBox: number
   structureBox: number
-  editorBox: number
+  editorBox: number,
+  paneObjCollection: PaneObjCollection,
 }
 
 export type LayoutSizeHook = {
@@ -14,7 +16,12 @@ export type LayoutSizeHook = {
 
 export const useLayoutSize = (): LayoutSizeHook => {
   const appContainerEl = useRef<HTMLDivElement | null>(null)
-  const [layoutWidth, setLayoutWidth] = useState<LayoutWidth>({ teamBox: 50, structureBox: 250, editorBox: 0 })
+  const [layoutWidth, setLayoutWidth] = useState<LayoutWidth>({
+    teamBox: 50,
+    structureBox: 250,
+    editorBox: 0,
+    paneObjCollection: { kv: {}, order: [] }
+  })
 
   const resizeLayoutWidth = useCallback(() => {
     if (appContainerEl.current) {

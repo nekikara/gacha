@@ -1,11 +1,10 @@
 import clsx from 'clsx'
 import React from 'react'
-import { UUIDv4 } from '~/interfaces/uuidv4'
+import { PaneID } from '~/interfaces/pane'
 import { ResizeEmitter } from '../shared/ResizeEmitter'
 
-type PaneInfoID = UUIDv4
 export interface PaneInfo {
-  id: PaneInfoID
+  id: PaneID
   index: number
 }
 

@@ -1,17 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { KontaObject } from '~/interfaces/konta'
-import { PaneID } from '~/interfaces/pane'
-import { genUUIDv4 } from '~/utils/uuidGen'
-import { EditorPane, PaneInfo } from './EditorParts/EditorPane'
+import { PaneID, PaneObj } from '~/interfaces/pane'
+import { EditorEmpty } from './EditorParts/EditorEmpty'
+import { EditorPane } from './EditorParts/EditorPane'
 
-interface PaneStyle {
-  x: number,
-  w: number,
-}
-
-type PaneObj = PaneStyle & PaneInfo
-
-interface PaneObjCollection {
+interface PaneCollectionFroEditorZone {
   kv: Record<PaneID, PaneObj>
   order: PaneID[]
 }
@@ -19,75 +12,48 @@ interface PaneObjCollection {
 type Props = {
   width: number
   activeKontaObject: KontaObject | null
+  paneObjCollection: PaneCollectionFroEditorZone
 }
 
-export const EditorZone: React.VFC<Props> = ({ width, activeKontaObject }) => {
-  const [panes, setPanes] = useState<PaneObjCollection>({ kv: {}, order: [] });
+export const EditorZone: React.VFC<Props> = ({ width, activeKontaObject, paneObjCollection }) => {
 
-  useEffect(() => {
-    const paneNum = 1
-    const halfW = width / paneNum;
-
-    const kv = panes.kv
-    const newOrder = []
-    for (let i = 0; i < paneNum; i++) {
-      const obj = {
-        id: genUUIDv4(),
-        index: i,
-        x: halfW * i,
-        w: halfW
-      }
-      kv[obj.id] = obj
-      newOrder.push(obj.id)
-    }
-
-    setPanes({ kv, order: newOrder })
-  }, [width, panes.kv])
+  const isEmpty = useMemo(() => paneObjCollection.order.length === 0, [paneObjCollection.order])
 
   const genResizeEventHandler = (index: number) => {
     return (info: { x: number, y: number }) => {
-      const leftPaneId = panes.order[index - 1]
-      const leftPane = panes.kv[leftPaneId];
-
-      const rightPaneId = panes.order[index]
-      const rightPane = panes.kv[rightPaneId];
-
-      const newLeft = { ...leftPane, w: leftPane.w + info.x }
-      const newRight = { ...rightPane, x: rightPane.x + info.x, w: rightPane.w - info.x }
-
-      const kv = panes.kv
-      kv[leftPaneId] = newLeft
-      kv[rightPaneId] = newRight;
-
-      setPanes((oldPanes: PaneObjCollection) => {
-        return { kv, order: oldPanes.order }
-      })
+      console.log(index, info)
     }
   }
+
+  const renderPanes = (panes: PaneCollectionFroEditorZone) => {
+    return paneObjCollection.order.map((paneId: PaneID) => {
+      const paneObj = paneObjCollection.kv[paneId]
+      return (
+        <div
+          key={paneObj.id}
+          className="editorPaneFrame"
+          style={{
+            left: `${paneObj.x}px`,
+            width: `${paneObj.w}px`
+          }}
+        >
+          <EditorPane
+            info={paneObj}
+            onWidthChange={genResizeEventHandler(paneObj.index)}
+          >
+            pane{paneObj.index}
+          </EditorPane>
+        </div>
+      )
+    })
+  }
+
+  console.log('isEmpty', isEmpty)
 
   return (
     <>
       <div className="editorFrame">
-        {panes.order.map((paneId: PaneID) => {
-          const paneObj = panes.kv[paneId]
-          return (
-            <div
-              key={paneObj.id}
-              className="editorPaneFrame"
-              style={{
-                left: `${paneObj.x}px`,
-                width: `${paneObj.w}px`
-              }}
-            >
-              <EditorPane
-                info={paneObj}
-                onWidthChange={genResizeEventHandler(paneObj.index)}
-              >
-                pane{paneObj.index}
-              </EditorPane>
-            </div>
-          )
-        })}
+        {isEmpty ? <EditorEmpty /> : renderPanes(paneObjCollection)}
       </div>
       <style jsx>{`
         .editorFrame {
