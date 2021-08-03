@@ -1,7 +1,7 @@
 import { KontaID } from '../interfaces/konta';
 import { useState } from 'react';
 import { genUUIDv4 } from '~/utils/uuidGen';
-import { TabID, TabCollection, TabObject } from '~/interfaces/tab';
+import { TabID, TabCollection, TabObject, Tab } from '~/interfaces/tab';
 
 export const useTabDB = () => {
   const [tabCollection, setTabCollection] = useState<TabCollection>({ kv: {} });
@@ -31,5 +31,8 @@ export const useTabDB = () => {
       })
       return newTab.id
     },
+    findById: (tabId: TabID): Tab | null => {
+      return tabCollection.kv[tabId]
+    }
   }
 }

@@ -3,9 +3,10 @@ import { KontaObject } from '~/interfaces/konta'
 import { PaneID, PaneObj } from '~/interfaces/pane'
 import { PaneTabRankCollection } from '~/interfaces/paneTabRank'
 import { PlatformCollection } from '~/interfaces/platform'
-import { Tab, TabCollection } from '~/interfaces/tab'
+import { TabCollection, TabID } from '~/interfaces/tab'
 import { EditorEmpty } from './EditorParts/EditorEmpty'
 import { EditorPane } from './EditorParts/EditorPane'
+import { EditorTabBox } from './EditorParts/EditorTabBox'
 
 interface PaneCollectionFroEditorZone {
   kv: Record<PaneID, PaneObj>
@@ -19,10 +20,13 @@ type Props = {
   paneTabRankCollection: PaneTabRankCollection
   tabCollection: TabCollection
   platformCollection: PlatformCollection
+  onTabSelect: (tabId: TabID) => void
 }
 
 export const EditorZone: React.VFC<Props> = ({
-  width, activeKontaObject, paneObjCollection, paneTabRankCollection, tabCollection, platformCollection
+  width, activeKontaObject, paneObjCollection,
+  paneTabRankCollection, tabCollection, platformCollection,
+  onTabSelect
 }) => {
   const isEmpty = paneObjCollection.order.length === 0
 
@@ -30,6 +34,9 @@ export const EditorZone: React.VFC<Props> = ({
     return (info: { x: number, y: number }) => {
       console.log(index, info)
     }
+  }
+  const handleTabSelect = (tabId: TabID) => {
+    onTabSelect(tabId)
   }
 
   const renderPanes = () => {
@@ -55,18 +62,12 @@ export const EditorZone: React.VFC<Props> = ({
             info={paneObj}
             onWidthChange={genResizeEventHandler(paneObj.index)}
           >
-            {tabs.map((tab: Tab) => {
-              let obj = null
-              switch (tab.tabObj.type) {
-                case 'platform':
-                  const x = platformCollection.kv[tab.tabObj.id]
-                  obj = { id: tab.id, name: x.name }
-                  break;
-                default:
-                  break;
-              }
-              return obj?.name
-            })}
+            <EditorTabBox
+              activeKontaObject={activeKontaObject}
+              tabs={tabs}
+              platformCollection={platformCollection}
+              onTabSelect={handleTabSelect}
+            />
           </EditorPane>
         </div>
       )

@@ -18,6 +18,7 @@ import { useActiveKontaHistoryDB } from '~/hooks/useActiveKontaHistoryDB '
 import { KontaID, KontaObject } from '~/interfaces/konta'
 import { useTabDB } from '~/hooks/useTabDB'
 import { usePaneTabRankDB } from '~/hooks/usePaneTabRankDB'
+import { TabID } from '~/interfaces/tab'
 
 export default function Index() {
   const [mode, setMode] = useState<SideMenu>('button')
@@ -145,6 +146,13 @@ export default function Index() {
     }
   }
 
+  const handleTabSelect = (tabId: TabID) => {
+    const tab = tabDB.findById(tabId)
+    if (tab) {
+      handleActiveKontaChange(tab.kontaId)
+    }
+  }
+
   const handleNewPlatform = () => {
     addNewPlatform()
   }
@@ -188,6 +196,7 @@ export default function Index() {
               paneTabRankCollection={paneTabRankDB.paneTabRankCollection}
               tabCollection={tabDB.tabCollection}
               platformCollection={platformDB.platformCollection}
+              onTabSelect={handleTabSelect}
             />
             {/* <Board
               mode={mode}
