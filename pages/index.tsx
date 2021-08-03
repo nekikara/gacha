@@ -13,15 +13,25 @@ import { Element, ElementCollection } from '~/components/BoardParts/element'
 import { useButtonTagDB } from '~/hooks/useButtonTagDB'
 import { StylerSize } from '~/interfaces/styler'
 import { useStylerDB } from '~/hooks/useStylerDB'
+import { EditorZone } from '~/components/EditorZone'
+import { useActiveKontaHistoryDB } from '~/hooks/useActiveKontaHistoryDB '
+import { KontaID, KontaObject } from '~/interfaces/konta'
+import { useTabDB } from '~/hooks/useTabDB'
+import { usePaneTabRankDB } from '~/hooks/usePaneTabRankDB'
+import { TabID } from '~/interfaces/tab'
 
 export default function Index() {
   const [mode, setMode] = useState<SideMenu>('button')
+  const [activeKontaObject, setKontaObject] = useState<KontaObject | null>(null)
   const stylerDB = useStylerDB()
   const buttonTagDB = useButtonTagDB()
   const htmlTagDB = useHTMLTagDB()
   const platformDB = usePlatformDB()
   const kontaDB = useKontaDB()
+  const activeKontaHistoryDB = useActiveKontaHistoryDB()
   const layoutSize = useLayoutSize()
+  const tabDB = useTabDB()
+  const paneTabRankDB = usePaneTabRankDB()
   const elementCollection = useMemo(() => {
     const htmlTagC = htmlTagDB.htmlTagCollection
     const elms = htmlTagC.order.reduce((acc: ElementCollection, uuid: UUIDv4) => {
@@ -44,12 +54,33 @@ export default function Index() {
 
   }, [htmlTagDB, buttonTagDB, stylerDB])
 
-  useEffect(() => {
+  const addNewPlatform = () => {
     const newPlatform = platformDB.genNewPlatform();
     platformDB.addNewPlatform(newPlatform)
     const newKonta = kontaDB.genNewKonta(newPlatform, 0)
     kontaDB.addNewKonta(newKonta, null)
+  }
+
+  useEffect(() => {
+    const kontaCollection = kontaDB.kontaCollection
+    if (kontaCollection.entries.length === 0) {
+      addNewPlatform()
+    }
   }, [])
+
+  useEffect(() => {
+    const konta = kontaDB.findKontaById(activeKontaHistoryDB.latest)
+    let kontaObj: KontaObject | null = null;
+    switch (konta?.obj.type) {
+      case 'platform':
+        kontaObj = platformDB.platformCollection.kv[konta.obj.id]
+        break;
+      case 'html_tag':
+        kontaObj = htmlTagDB.htmlTagCollection.kv[konta.obj.id]
+        break;
+    }
+    setKontaObject(() => kontaObj)
+  }, [kontaDB, activeKontaHistoryDB.latest, platformDB.platformCollection.kv, htmlTagDB.htmlTagCollection.kv])
 
   const handleCompile = async () => {
     try {
@@ -90,13 +121,40 @@ export default function Index() {
       htmlTagDB.addNewHTMLTag(htmlTag)
       const platformId = platformDB.platformCollection.order[0]
       const platform = platformDB.platformCollection.kv[platformId]
-      const parentKonta = kontaDB.findKonta({kontaObjectId: platform.id, kontaObjectType: 'platform'})
+      const parentKonta = kontaDB.findKonta({ kontaObjectId: platform.id, kontaObjectType: 'platform' })
       const newKonta = kontaDB.genNewKonta(htmlTag, Number(parentKonta?.level) + 1)
       kontaDB.addNewKonta(newKonta, parentKonta)
     }
   }
   const handleElementContentChange = (info: { id: UUIDv4, title: string }) => {
     console.log('update element', info)
+  }
+  const handleActiveKontaChange = (kontaId: KontaID) => {
+    activeKontaHistoryDB.addNew(kontaId)
+    const kontaObj = kontaDB.findKontaById(kontaId)
+    switch (kontaObj?.obj.type) {
+      case 'platform':
+        const paneId = layoutSize.addNewPaneIfFirst()
+        const alreadyTab = tabDB.hasAlready(kontaId, { type: 'platform', id: kontaObj!.obj.id })
+        if (!alreadyTab) {
+          const tabId = tabDB.addNewTab(kontaId, { type: 'platform', id: kontaObj!.obj.id })
+          paneTabRankDB.addNewPaneTabRank(paneId, tabId)
+        }
+        break;
+      default:
+        console.log('not found')
+    }
+  }
+
+  const handleTabSelect = (tabId: TabID) => {
+    const tab = tabDB.findById(tabId)
+    if (tab) {
+      handleActiveKontaChange(tab.kontaId)
+    }
+  }
+
+  const handleNewPlatform = () => {
+    addNewPlatform()
   }
 
   return (
@@ -109,28 +167,43 @@ export default function Index() {
         </Head>
 
         <AppHeader onCompile={handleCompile} />
-        <main className="main">
-          <section className="menu">
+        <main ref={layoutSize.appContainerEl} className="main">
+          <section
+            className="menu"
+            style={{ width: `${layoutSize.layoutWidth.teamBox}px` }}
+          >
             <SideMenuBar mode={mode} onChange={setMode} />
           </section>
           <section
             className="structureBar"
-            style={{ width: `${layoutSize.structureBarWidth}px` }}
+            style={{ width: `${layoutSize.layoutWidth.structureBox}px` }}
           >
             <StructureBarBox
+              activeKontaId={activeKontaHistoryDB.latest}
               kontaCollection={kontaDB.kontaCollection}
               platformCollection={platformDB.platformCollection}
               htmlTagCollection={htmlTagDB.htmlTagCollection}
               onWidthChanged={layoutSize.changeStructureBarWidth}
+              onActiveKontaChange={handleActiveKontaChange}
+              onPlatformAdd={handleNewPlatform}
             />
           </section>
           <section className="content">
-            <Board
+            <EditorZone
+              width={layoutSize.layoutWidth.editorBox}
+              activeKontaObject={activeKontaObject}
+              paneObjCollection={layoutSize.layoutWidth.paneObjCollection}
+              paneTabRankCollection={paneTabRankDB.paneTabRankCollection}
+              tabCollection={tabDB.tabCollection}
+              platformCollection={platformDB.platformCollection}
+              onTabSelect={handleTabSelect}
+            />
+            {/* <Board
               mode={mode}
               elementCollection={elementCollection}
               onNewElement={handleNewElement}
               onElementContentChanged={handleElementContentChange}
-            />
+            /> */}
           </section>
         </main>
 
@@ -139,13 +212,14 @@ export default function Index() {
         .container {
           min-height: 100vh;
           height: 100vh;
+          max-height: 100vh;
         }
         .main {
           display: flex;
           flex-direction: row;
+          overflow: hidden;
         }
         .menu {
-          width: 50px;
           height: calc(100vh - 30px);
         }
         .structureBar {
@@ -153,10 +227,6 @@ export default function Index() {
         }
         .content {
           flex: 1;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          padding: 50px;
         }
       `}</style>
     </>

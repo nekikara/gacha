@@ -3,12 +3,14 @@ import { ProjectLayerItem } from './ProjectStructureParts/ProjectLayer'
 import { ProjectLayerUL } from './ProjectStructureParts/ProjectLayerUL'
 import { ProjectLayerLI } from './ProjectStructureParts/ProjectLayerLI'
 import { ProjectLayer } from './ProjectStructureParts/ProjectLayer'
+import { KontaID } from '~/interfaces/konta'
 
 type Props = {
   projectLayers: ProjectLayerItem[]
+  onSelectedLayerChange: (kontaId: KontaID) => void
 }
 
-export const ProjectStructureBox: React.VFC<Props> = ({ projectLayers }) => {
+export const ProjectStructureBox: React.VFC<Props> = ({ projectLayers, onSelectedLayerChange }) => {
   if (projectLayers.length < 1) return null
   return (
     <>
@@ -16,8 +18,14 @@ export const ProjectStructureBox: React.VFC<Props> = ({ projectLayers }) => {
         {projectLayers.map((layer: ProjectLayerItem) => {
           return (
             <ProjectLayerLI key={layer.id}>
-              <ProjectLayer layer={layer} />
-              <ProjectStructureBox projectLayers={layer.children} />
+              <ProjectLayer
+                layer={layer}
+                onLayerSelect={onSelectedLayerChange}
+              />
+              <ProjectStructureBox
+                projectLayers={layer.children}
+                onSelectedLayerChange={onSelectedLayerChange}
+              />
             </ProjectLayerLI>
           )
         })}

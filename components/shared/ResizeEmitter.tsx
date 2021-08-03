@@ -1,39 +1,41 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 type Props = {
-  originX: number
-  onWidthChanged: (width: number) => void
+  onBarMove: (info: { x: number, y: number }) => void
 }
 
-export const StructureBarResizer: React.VFC<Props> = ({ originX, onWidthChanged }) => {
+export const ResizeEmitter: React.VFC<Props> = ({ onBarMove }) => {
   const handleEl = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const updateWidth = (clientX: number) => {
-      const width = clientX - originX
-      onWidthChanged(width)
+    let startX = 0;
+    const emitMoving = (clientX: number) => {
+      const width = clientX - startX
+      startX = clientX
+      onBarMove({ x: width, y: 0 })
     }
 
-    let lastWidthUpdatedTime = 0;
-    const move = (e: MouseEvent) => {
-      const now = Date.now()
-      const diff = now - lastWidthUpdatedTime
-      if (diff > 80) {
-        updateWidth(e.clientX)
-        lastWidthUpdatedTime = now;
-      }
-    }
-    const up = (e: MouseEvent) => {
-      updateWidth(e.clientX)
-      window.document.body.style.cursor = 'auto'
-      window.removeEventListener('mousemove', move, true)
-      window.removeEventListener('mouseup', up, true)
-    }
-    const down = () => {
+    const down = (e: MouseEvent) => {
+      startX = e.clientX
       window.document.body.style.cursor = 'ew-resize'
       lastWidthUpdatedTime = Date.now()
       window.addEventListener('mousemove', move, true)
       window.addEventListener('mouseup', up, true)
+    }
+    let lastWidthUpdatedTime = 0;
+    const move = (e: MouseEvent) => {
+      const now = Date.now()
+      const diff = now - lastWidthUpdatedTime
+      if (diff > 30) {
+        emitMoving(e.clientX)
+        lastWidthUpdatedTime = now;
+      }
+    }
+    const up = (e: MouseEvent) => {
+      emitMoving(e.clientX)
+      window.document.body.style.cursor = 'auto'
+      window.removeEventListener('mousemove', move, true)
+      window.removeEventListener('mouseup', up, true)
     }
     let handleElCurrent = handleEl.current
     if (!!handleElCurrent) {
@@ -42,7 +44,7 @@ export const StructureBarResizer: React.VFC<Props> = ({ originX, onWidthChanged 
     return () => {
       handleElCurrent?.removeEventListener('mousedown', down)
     }
-  }, [handleEl, originX, onWidthChanged])
+  }, [handleEl, onBarMove])
 
   return (
     <>

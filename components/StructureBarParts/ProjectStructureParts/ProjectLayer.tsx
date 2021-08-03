@@ -1,9 +1,10 @@
+import clsx from 'clsx'
 import React from 'react'
-import { UUIDv4 } from '~/interfaces/uuidv4'
-import { ProjectStructureBox } from '../ProjectStructureBox'
+import { KontaID } from '~/interfaces/konta'
 
 export type ProjectLayerItem = {
-  id: UUIDv4
+  id: KontaID
+  active: boolean
   name: string,
   horizontalLevel: number
   children: ProjectLayerItem[]
@@ -11,17 +12,23 @@ export type ProjectLayerItem = {
 
 type Props = {
   layer: ProjectLayerItem
+  onLayerSelect: (kontaId: KontaID) => void
 } & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 
-export const ProjectLayer: React.VFC<Props> = ({ layer }) => {
+export const ProjectLayer: React.VFC<Props> = ({ layer, onLayerSelect }) => {
+  const kontaCls = clsx("projectLayerInfo", layer.active && 'active')
+  const handleSelect = () => {
+    onLayerSelect(layer.id)
+  }
   return (
     <>
       <div className="projectLayerFrame">
         <div
-          className="projectLayerInfo"
+          className={kontaCls}
           style={{
             paddingLeft: `${10 * layer.horizontalLevel}px`
           }}
+          onClick={handleSelect}
         >
           {layer.name}
         </div>
@@ -37,6 +44,10 @@ export const ProjectLayer: React.VFC<Props> = ({ layer }) => {
         }
         .projectLayerInfo {
           padding: 5px 0;
+        }
+        .projectLayerInfo.active {
+          color: rgba(255, 5, 49, 1);
+          text-shadow: 0 0 0.2rem rgba(255, 5, 49, 0.5);
         }
       `}</style>
     </>
