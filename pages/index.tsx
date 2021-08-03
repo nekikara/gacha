@@ -54,7 +54,6 @@ export default function Index() {
     platformDB.addNewPlatform(newPlatform)
     const newKonta = kontaDB.genNewKonta(newPlatform, 0)
     kontaDB.addNewKonta(newKonta, null)
-    activeKontaHistoryDB.addNew(newKonta.id)
   }, [])
 
   useEffect(() => {
@@ -120,6 +119,17 @@ export default function Index() {
   }
   const handleActiveKontaChange = (kontaId: KontaID) => {
     activeKontaHistoryDB.addNew(kontaId)
+    const kontaObj = kontaDB.findKontaById(kontaId)
+    switch (kontaObj?.obj.type) {
+      case 'platform':
+        layoutSize.addNewPaneIfFirst()
+        break;
+      case 'html_tag':
+        console.log('html_tag')
+        break;
+      default:
+        console.log('not found')
+    }
   }
 
   return (

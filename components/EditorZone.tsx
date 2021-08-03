@@ -16,8 +16,7 @@ type Props = {
 }
 
 export const EditorZone: React.VFC<Props> = ({ width, activeKontaObject, paneObjCollection }) => {
-
-  const isEmpty = useMemo(() => paneObjCollection.order.length === 0, [paneObjCollection.order])
+  const isEmpty = paneObjCollection.order.length === 0
 
   const genResizeEventHandler = (index: number) => {
     return (info: { x: number, y: number }) => {
@@ -47,8 +46,6 @@ export const EditorZone: React.VFC<Props> = ({ width, activeKontaObject, paneObj
       )
     })
   }
-
-  console.log('isEmpty', isEmpty)
 
   return (
     <>

@@ -1,3 +1,4 @@
+import { genUUIDv4 } from '~/utils/uuidGen';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { PaneObjCollection } from '~/interfaces/pane';
 
@@ -12,6 +13,7 @@ export type LayoutSizeHook = {
   layoutWidth: LayoutWidth
   appContainerEl: React.Ref<HTMLDivElement> | null,
   changeStructureBarWidth: (diff: { x: number, y: number }) => void
+  addNewPaneIfFirst: () => void
 }
 
 export const useLayoutSize = (): LayoutSizeHook => {
@@ -59,5 +61,29 @@ export const useLayoutSize = (): LayoutSizeHook => {
         return { ...oldLayoutWidth, structureBox: strcutureBarBox, editorBox: editorBarBox }
       })
     },
+    addNewPaneIfFirst: () => {
+      if (layoutWidth.paneObjCollection.order.length !== 0) return
+      setLayoutWidth((oldLayoutWidth: LayoutWidth) => {
+        const newPane = {
+          id: genUUIDv4(),
+          index: 0,
+          x: 0,
+          w: oldLayoutWidth.editorBox
+        }
+        const collection = {
+          kv: {
+            [newPane.id]: newPane,
+          },
+          order: [newPane.id]
+        }
+        return {
+          teamBox: oldLayoutWidth.teamBox,
+          structureBox: oldLayoutWidth.structureBox,
+          editorBox: oldLayoutWidth.editorBox,
+          paneObjCollection: collection
+        }
+
+      })
+    }
   }
 }
