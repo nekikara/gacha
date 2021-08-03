@@ -134,8 +134,11 @@ export default function Index() {
     switch (kontaObj?.obj.type) {
       case 'platform':
         const paneId = layoutSize.addNewPaneIfFirst()
-        const tabId = tabDB.addNewTab(kontaId, { type: 'platform', id: kontaObj!.obj.id })
-        paneTabRankDB.addNewPaneTabRank(paneId, tabId)
+        const alreadyTab = tabDB.hasAlready(kontaId, { type: 'platform', id: kontaObj!.obj.id })
+        if (!alreadyTab) {
+          const tabId = tabDB.addNewTab(kontaId, { type: 'platform', id: kontaObj!.obj.id })
+          paneTabRankDB.addNewPaneTabRank(paneId, tabId)
+        }
         break;
       default:
         console.log('not found')

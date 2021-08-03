@@ -9,16 +9,16 @@ export const usePaneTabRankDB = () => {
   return {
     paneTabRankCollection,
     addNewPaneTabRank: (paneId: PaneID, tabId: TabID): Rank => {
-      const paneTabRank = paneTabRankCollection.kv[paneId]
-      const newRequired = !paneTabRank
-      const nextRank = newRequired ? 1 : paneTabRank.last + 1
+      const paneTabRanks = paneTabRankCollection.kv[paneId]
+      const newRequired = !paneTabRanks
+      const nextRank = newRequired ? 1 : paneTabRanks.last + 1
       const newPaneTabRank = {
         paneId,
         tabId,
         rank: nextRank
       }
       setPaneTabRankCollection((old: PaneTabRankCollection) => {
-        if (nextRank) {
+        if (newRequired) {
           old.kv[paneId] = {
             kv: {
               [nextRank]: newPaneTabRank
@@ -27,6 +27,7 @@ export const usePaneTabRankDB = () => {
           }
         } else {
           old.kv[paneId].kv[newPaneTabRank.rank] = newPaneTabRank
+          old.kv[paneId].last = nextRank
         }
 
         return old
