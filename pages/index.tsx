@@ -16,6 +16,8 @@ import { useStylerDB } from '~/hooks/useStylerDB'
 import { EditorZone } from '~/components/EditorZone'
 import { useActiveKontaHistoryDB } from '~/hooks/useActiveKontaHistoryDB '
 import { KontaID, KontaObject } from '~/interfaces/konta'
+import { useTabDB } from '~/hooks/useTabDB'
+import { usePaneTabRankDB } from '~/hooks/usePaneTabRankDB'
 
 export default function Index() {
   const [mode, setMode] = useState<SideMenu>('button')
@@ -27,6 +29,8 @@ export default function Index() {
   const kontaDB = useKontaDB()
   const activeKontaHistoryDB = useActiveKontaHistoryDB()
   const layoutSize = useLayoutSize()
+  const tabDB = useTabDB()
+  const paneTabRankDB = usePaneTabRankDB()
   const elementCollection = useMemo(() => {
     const htmlTagC = htmlTagDB.htmlTagCollection
     const elms = htmlTagC.order.reduce((acc: ElementCollection, uuid: UUIDv4) => {
@@ -122,10 +126,9 @@ export default function Index() {
     const kontaObj = kontaDB.findKontaById(kontaId)
     switch (kontaObj?.obj.type) {
       case 'platform':
-        layoutSize.addNewPaneIfFirst()
-        break;
-      case 'html_tag':
-        console.log('html_tag')
+        const paneId = layoutSize.addNewPaneIfFirst()
+        const tabId = tabDB.addNewTab(kontaId, { type: 'platform', id: kontaObj!.obj.id })
+        paneTabRankDB.addNewPaneTabRank(paneId, tabId)
         break;
       default:
         console.log('not found')
@@ -167,6 +170,9 @@ export default function Index() {
               width={layoutSize.layoutWidth.editorBox}
               activeKontaObject={activeKontaObject}
               paneObjCollection={layoutSize.layoutWidth.paneObjCollection}
+              paneTabRankCollection={paneTabRankDB.paneTabRankCollection}
+              tabCollection={tabDB.tabCollection}
+              platformCollection={platformDB.platformCollection}
             />
             {/* <Board
               mode={mode}
