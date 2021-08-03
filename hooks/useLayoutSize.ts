@@ -15,6 +15,7 @@ export type LayoutSizeHook = {
   appContainerEl: React.Ref<HTMLDivElement> | null,
   changeStructureBarWidth: (diff: { x: number, y: number }) => void
   addNewPaneIfFirst: () => PaneID
+  addNewPane: () => PaneID
 }
 
 export const useLayoutSize = (): LayoutSizeHook => {
@@ -87,6 +88,9 @@ export const useLayoutSize = (): LayoutSizeHook => {
         }
       })
       return newPane.id
+    },
+    addNewPane: (): PaneID => {
+      return 'xxx'
     }
   }
 }

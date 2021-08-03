@@ -53,11 +53,18 @@ export default function Index() {
 
   }, [htmlTagDB, buttonTagDB, stylerDB])
 
-  useEffect(() => {
+  const addNewPlatform = () => {
     const newPlatform = platformDB.genNewPlatform();
     platformDB.addNewPlatform(newPlatform)
     const newKonta = kontaDB.genNewKonta(newPlatform, 0)
     kontaDB.addNewKonta(newKonta, null)
+  }
+
+  useEffect(() => {
+    const kontaCollection = kontaDB.kontaCollection
+    if (kontaCollection.entries.length === 0) {
+      addNewPlatform()
+    }
   }, [])
 
   useEffect(() => {
@@ -135,6 +142,10 @@ export default function Index() {
     }
   }
 
+  const handleNewPlatform = () => {
+    addNewPlatform()
+  }
+
   return (
     <>
       <div className="container">
@@ -163,6 +174,7 @@ export default function Index() {
               htmlTagCollection={htmlTagDB.htmlTagCollection}
               onWidthChanged={layoutSize.changeStructureBarWidth}
               onActiveKontaChange={handleActiveKontaChange}
+              onPlatformAdd={handleNewPlatform}
             />
           </section>
           <section className="content">
