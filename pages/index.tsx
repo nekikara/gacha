@@ -245,9 +245,11 @@ export default function Index() {
         }
         .structureBar {
           height: calc(100vh - 30px);
+          z-index: 10;
         }
         .content {
           flex: 1;
+          z-index: 1;
         }
       `}</style>
     </>

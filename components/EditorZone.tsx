@@ -56,7 +56,7 @@ export const EditorZone: React.VFC<Props> = ({
       return (
         <div
           key={paneObj.id}
-          className="editorPaneFrame"
+          className="editorPaneFrameInZone"
           style={{
             left: `${paneObj.x}px`,
             width: `${paneObj.w}px`,
@@ -90,7 +90,7 @@ export const EditorZone: React.VFC<Props> = ({
           width: 100%;
           height: 100%;
         }
-        .editorPaneFrame {
+        .editorPaneFrameInZone {
           position: absolute;
           top: 0;
           height: 100%;
