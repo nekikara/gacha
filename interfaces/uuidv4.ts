@@ -1,1 +1,1 @@
-export type UUIDv4 = string;
+export type UUIDv4 = string

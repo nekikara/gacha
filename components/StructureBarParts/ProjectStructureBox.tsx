@@ -10,7 +10,10 @@ type Props = {
   onSelectedLayerChange: (kontaId: KontaID) => void
 }
 
-export const ProjectStructureBox: React.VFC<Props> = ({ projectLayers, onSelectedLayerChange }) => {
+export const ProjectStructureBox: React.VFC<Props> = ({
+  projectLayers,
+  onSelectedLayerChange,
+}) => {
   if (projectLayers.length < 1) return null
   return (
     <>

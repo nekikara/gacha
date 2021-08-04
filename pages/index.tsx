@@ -34,28 +34,30 @@ export default function Index() {
   const paneTabRankDB = usePaneTabRankDB()
   const elementCollection = useMemo(() => {
     const htmlTagC = htmlTagDB.htmlTagCollection
-    const elms = htmlTagC.order.reduce((acc: ElementCollection, uuid: UUIDv4) => {
-      const htmlTag = htmlTagC.kv[uuid]
-      const buttonTag = buttonTagDB.buttonTagCollection.kv[htmlTag.tagObj.id]
-      const styler = stylerDB.stylerCollection.kv[htmlTag.styler.id]
-      acc.kv[uuid] = {
-        id: uuid,
-        elementType: { type: buttonTag.tagType, content: buttonTag.content },
-        styleInfo: {
-          position: styler.position,
-          width: styler.width,
-          height: styler.height
+    const elms = htmlTagC.order.reduce(
+      (acc: ElementCollection, uuid: UUIDv4) => {
+        const htmlTag = htmlTagC.kv[uuid]
+        const buttonTag = buttonTagDB.buttonTagCollection.kv[htmlTag.tagObj.id]
+        const styler = stylerDB.stylerCollection.kv[htmlTag.styler.id]
+        acc.kv[uuid] = {
+          id: uuid,
+          elementType: { type: buttonTag.tagType, content: buttonTag.content },
+          styleInfo: {
+            position: styler.position,
+            width: styler.width,
+            height: styler.height,
+          },
         }
-      }
-      acc.order.push(uuid)
-      return acc
-    }, { kv: {}, order: [] })
+        acc.order.push(uuid)
+        return acc
+      },
+      { kv: {}, order: [] }
+    )
     return elms as ElementCollection
-
   }, [htmlTagDB, buttonTagDB, stylerDB])
 
   const addNewPlatform = () => {
-    const newPlatform = platformDB.genNewPlatform();
+    const newPlatform = platformDB.genNewPlatform()
     platformDB.addNewPlatform(newPlatform)
     const newKonta = kontaDB.genNewKonta(newPlatform, 0)
     kontaDB.addNewKonta(newKonta, null)
@@ -70,38 +72,46 @@ export default function Index() {
 
   useEffect(() => {
     const konta = kontaDB.findKontaById(activeKontaHistoryDB.latest)
-    let kontaObj: KontaObject | null = null;
+    let kontaObj: KontaObject | null = null
     switch (konta?.obj.type) {
       case 'platform':
         kontaObj = platformDB.platformCollection.kv[konta.obj.id]
-        break;
+        break
       case 'html_tag':
         kontaObj = htmlTagDB.htmlTagCollection.kv[konta.obj.id]
-        break;
+        break
     }
     setKontaObject(() => kontaObj)
-  }, [kontaDB, activeKontaHistoryDB.latest, platformDB.platformCollection.kv, htmlTagDB.htmlTagCollection.kv])
+  }, [
+    kontaDB,
+    activeKontaHistoryDB.latest,
+    platformDB.platformCollection.kv,
+    htmlTagDB.htmlTagCollection.kv,
+  ])
 
   const handleCompile = async () => {
     try {
       const response = await fetch('/api/compile', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ elementCollection })
+        body: JSON.stringify({ elementCollection }),
       })
       const json = await response.json()
 
-      const elem = document.createElement('a');
-      elem.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(json.html)}`);
-      elem.setAttribute('download', 'index.html');
-      elem.style.display = 'none';
-      document.body.appendChild(elem);
-      elem.click();
-      document.body.removeChild(elem);
+      const elem = document.createElement('a')
+      elem.setAttribute(
+        'href',
+        `data:text/plain;charset=utf-8,${encodeURIComponent(json.html)}`
+      )
+      elem.setAttribute('download', 'index.html')
+      elem.style.display = 'none'
+      document.body.appendChild(elem)
+      elem.click()
+      document.body.removeChild(elem)
     } catch (error) {
-      console.error(error);
+      console.error(error)
       alert('Error')
     }
   }
@@ -121,12 +131,18 @@ export default function Index() {
       htmlTagDB.addNewHTMLTag(htmlTag)
       const platformId = platformDB.platformCollection.order[0]
       const platform = platformDB.platformCollection.kv[platformId]
-      const parentKonta = kontaDB.findKonta({ kontaObjectId: platform.id, kontaObjectType: 'platform' })
-      const newKonta = kontaDB.genNewKonta(htmlTag, Number(parentKonta?.level) + 1)
+      const parentKonta = kontaDB.findKonta({
+        kontaObjectId: platform.id,
+        kontaObjectType: 'platform',
+      })
+      const newKonta = kontaDB.genNewKonta(
+        htmlTag,
+        Number(parentKonta?.level) + 1
+      )
       kontaDB.addNewKonta(newKonta, parentKonta)
     }
   }
-  const handleElementContentChange = (info: { id: UUIDv4, title: string }) => {
+  const handleElementContentChange = (info: { id: UUIDv4; title: string }) => {
     console.log('update element', info)
   }
   const handleActiveKontaChange = (kontaId: KontaID) => {
@@ -135,12 +151,18 @@ export default function Index() {
     switch (kontaObj?.obj.type) {
       case 'platform':
         const paneId = layoutSize.addNewPaneIfFirst()
-        const alreadyTab = tabDB.hasAlready(kontaId, { type: 'platform', id: kontaObj!.obj.id })
+        const alreadyTab = tabDB.hasAlready(kontaId, {
+          type: 'platform',
+          id: kontaObj!.obj.id,
+        })
         if (!alreadyTab) {
-          const tabId = tabDB.addNewTab(kontaId, { type: 'platform', id: kontaObj!.obj.id })
+          const tabId = tabDB.addNewTab(kontaId, {
+            type: 'platform',
+            id: kontaObj!.obj.id,
+          })
           paneTabRankDB.addNewPaneTabRank(paneId, tabId)
         }
-        break;
+        break
       default:
         console.log('not found')
     }
@@ -206,7 +228,6 @@ export default function Index() {
             /> */}
           </section>
         </main>
-
       </div>
       <style jsx>{`
         .container {

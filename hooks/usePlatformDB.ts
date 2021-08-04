@@ -1,15 +1,16 @@
-import { Platform, PlatformCollection } from "~/interfaces/platform"
-import { useState } from 'react';
-import { genUUIDv4 } from "~/utils/uuidGen";
+import { Platform, PlatformCollection } from '~/interfaces/platform'
+import { useState } from 'react'
+import { genUUIDv4 } from '~/utils/uuidGen'
 
 export type PlatformDBHook = {
-  platformCollection: PlatformCollection,
+  platformCollection: PlatformCollection
   addNewPlatform: (platform: Platform) => void
   genNewPlatform: () => Platform
 }
 
 export const usePlatformDB = (): PlatformDBHook => {
-  const [platformCollection, setPlatformCollection] = useState<PlatformCollection>({ kv: {}, order: [] });
+  const [platformCollection, setPlatformCollection] =
+    useState<PlatformCollection>({ kv: {}, order: [] })
 
   return {
     platformCollection,
@@ -24,8 +25,8 @@ export const usePlatformDB = (): PlatformDBHook => {
       return {
         id: genUUIDv4(),
         kontaObjectType: 'platform',
-        name: `Platform${platformCollection.order.length}`
+        name: `Platform${platformCollection.order.length}`,
       }
-    }
+    },
   }
 }

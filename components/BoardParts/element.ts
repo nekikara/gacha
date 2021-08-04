@@ -1,17 +1,17 @@
-import { CollectionBase } from '~/interfaces/collectionBase';
+import { CollectionBase } from '~/interfaces/collectionBase'
 import { genUUIDv4 } from '~/utils/uuidGen'
 import { UUIDv4 } from '~/interfaces/uuidv4'
 
 export type ElementType = ButtonType | DivType | NoneType
 
 export interface Element {
-  id: UUIDv4,
-  elementType: ElementType,
+  id: UUIDv4
+  elementType: ElementType
   styleInfo: StyleInfo
 }
 
 export interface ButtonType {
-  type: 'button',
+  type: 'button'
   content: string
 }
 
@@ -20,7 +20,7 @@ export interface NoneType {
 }
 
 export interface DivType {
-  type: 'div',
+  type: 'div'
   content: ElementType | ElementType[]
 }
 
@@ -32,7 +32,7 @@ export const genElement = (type: 'button' | 'div') => {
   return {
     id: genUUIDv4(),
     elementType,
-    styleInfo
+    styleInfo,
   }
 }
 
@@ -41,33 +41,32 @@ const genElementType = (type: 'button' | 'div'): ElementType => {
     case 'button':
       return {
         type,
-        content: 'button'
+        content: 'button',
       } as ButtonType
     case 'div':
       return {
         type,
-        content: { type: 'none' }
+        content: { type: 'none' },
       } as DivType
     default:
-      throw 'Not permitted to reach here';
+      throw 'Not permitted to reach here'
   }
-
 }
 
 export type StyleInfo = {
   position: {
-    top: number,
+    top: number
     left: number
-  },
-  width: number,
+  }
+  width: number
   height: number
 }
 
 const genInitialStyleInfo = (): StyleInfo => ({
   position: {
     top: 0,
-    left: 0
+    left: 0,
   },
   width: 0,
-  height: 0
+  height: 0,
 })

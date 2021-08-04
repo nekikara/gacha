@@ -1,17 +1,19 @@
-import { ButtonTag } from './../interfaces/buttonTag';
-import { HTMLTag, HTMLTagCollection } from '~/interfaces/htmlTag';
-import { useState } from 'react';
-import { genUUIDv4 } from "~/utils/uuidGen";
-import { Styler } from '~/interfaces/styler';
+import { ButtonTag } from './../interfaces/buttonTag'
+import { HTMLTag, HTMLTagCollection } from '~/interfaces/htmlTag'
+import { useState } from 'react'
+import { genUUIDv4 } from '~/utils/uuidGen'
+import { Styler } from '~/interfaces/styler'
 
 export type HTMLTagDBHook = {
-  htmlTagCollection: HTMLTagCollection,
+  htmlTagCollection: HTMLTagCollection
   addNewHTMLTag: (platform: HTMLTag) => void
   genNewHTMLTag: (tagObj: ButtonTag, styler: Styler) => HTMLTag
 }
 
 export const useHTMLTagDB = (): HTMLTagDBHook => {
-  const [htmlTagCollection, setHTMLTagCollection] = useState<HTMLTagCollection>({ kv: {}, order: [] });
+  const [htmlTagCollection, setHTMLTagCollection] = useState<HTMLTagCollection>(
+    { kv: {}, order: [] }
+  )
   return {
     htmlTagCollection,
     addNewHTMLTag: (htmlTag: HTMLTag) => {
@@ -28,12 +30,12 @@ export const useHTMLTagDB = (): HTMLTagDBHook => {
         name: `HTMLTag${htmlTagCollection.order.length}`,
         tagObj: {
           id: tagObj.id,
-          type: tagObj.tagType
+          type: tagObj.tagType,
         },
         styler: {
-          id: styler.id
-        }
+          id: styler.id,
+        },
       }
-    }
+    },
   }
 }

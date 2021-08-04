@@ -1,58 +1,72 @@
 import React, { useState } from 'react'
 import { SideMenu } from '~/components/SideMenuBar'
-import { Element, ElementCollection, genElement } from '~/components/BoardParts/element'
+import {
+  Element,
+  ElementCollection,
+  genElement,
+} from '~/components/BoardParts/element'
 import { UUIDv4 } from '~/interfaces/uuidv4'
 import { BoardItemContainer } from './BoardParts/BoardItemContainer'
 import { ElementTypeElement } from './BoardParts/ElementTypeElement'
 
-function calcElement(current: Element, clientPos: { y: number, x: number }, rect: Origin, origin: Origin) {
+function calcElement(
+  current: Element,
+  clientPos: { y: number; x: number },
+  rect: Origin,
+  origin: Origin
+) {
   const top = clientPos.y - rect.top
   const left = clientPos.x - rect.left
-  const newTop = origin.top < top ? origin.top : top;
-  const newLeft = origin.left < left ? origin.left : left;
+  const newTop = origin.top < top ? origin.top : top
+  const newLeft = origin.left < left ? origin.left : left
   const width = Math.abs(origin.left - left)
   const height = Math.abs(origin.top - top)
 
   const styleInfo = {
     position: {
       top: newTop,
-      left: newLeft
+      left: newLeft,
     },
     width: width,
-    height: height
+    height: height,
   }
 
   const elem: Element = {
     id: current.id,
     elementType: current.elementType,
-    styleInfo
+    styleInfo,
   }
   return elem
 }
 
 type MouseState = 'none' | 'started' | 'moved'
 type Origin = {
-  top: number;
-  left: number;
+  top: number
+  left: number
 }
 
 type Props = {
   mode: SideMenu
   elementCollection: ElementCollection
-  onNewElement: (elem: Element) => void;
-  onElementContentChanged: (info: { id: UUIDv4, title: string }) => void
+  onNewElement: (elem: Element) => void
+  onElementContentChanged: (info: { id: UUIDv4; title: string }) => void
 }
 
-export const Board: React.VFC<Props> = ({ mode, elementCollection, onNewElement, onElementContentChanged }) => {
-  const [waiting, setWaiting] = useState<boolean>(true);
-  const [mouseState, setMouseState] = useState<MouseState>('none');
+export const Board: React.VFC<Props> = ({
+  mode,
+  elementCollection,
+  onNewElement,
+  onElementContentChanged,
+}) => {
+  const [waiting, setWaiting] = useState<boolean>(true)
+  const [mouseState, setMouseState] = useState<MouseState>('none')
   const [origin, setOrigin] = useState<Origin>({ top: 0, left: 0 })
-  const [element, setElement] = useState<Element | null>(null);
+  const [element, setElement] = useState<Element | null>(null)
 
   const handleStart = (e: React.MouseEvent) => {
-    if (!waiting) return;
+    if (!waiting) return
     setMouseState('started')
-    const currentRect = e.currentTarget.getBoundingClientRect();
+    const currentRect = e.currentTarget.getBoundingClientRect()
     const top = e.clientY - currentRect.top
     const left = e.clientX - currentRect.left
     setOrigin({ top, left })
@@ -62,34 +76,44 @@ export const Board: React.VFC<Props> = ({ mode, elementCollection, onNewElement,
       styleInfo: {
         position: { top, left },
         width: initializedElement.styleInfo.width,
-        height: initializedElement.styleInfo.height
-      }
+        height: initializedElement.styleInfo.height,
+      },
     }
-    setElement(elem);
+    setElement(elem)
   }
   const handleMove = (e: React.MouseEvent) => {
-    if (!waiting) return;
+    if (!waiting) return
     if (mouseState === 'started') {
       setMouseState('moved')
     }
     if (mouseState === 'moved') {
-      const currentRect = e.currentTarget.getBoundingClientRect();
-      const elem = calcElement(element!, { x: e.clientX, y: e.clientY }, currentRect, origin)
+      const currentRect = e.currentTarget.getBoundingClientRect()
+      const elem = calcElement(
+        element!,
+        { x: e.clientX, y: e.clientY },
+        currentRect,
+        origin
+      )
       setElement(elem)
     }
   }
 
   const handleEnd = (e: React.MouseEvent) => {
-    if (!waiting || mouseState === 'none') return;
+    if (!waiting || mouseState === 'none') return
     if (mouseState === 'started') {
-      setElement(null);
+      setElement(null)
     } else {
-      const currentRect = e.currentTarget.getBoundingClientRect();
-      const elem = calcElement(element!, { x: e.clientX, y: e.clientY }, currentRect, origin)
+      const currentRect = e.currentTarget.getBoundingClientRect()
+      const elem = calcElement(
+        element!,
+        { x: e.clientX, y: e.clientY },
+        currentRect,
+        origin
+      )
       onNewElement(elem)
       setElement(null)
     }
-    setMouseState('none');
+    setMouseState('none')
   }
 
   const renderElement = (current: boolean, elem: Element) => {
@@ -98,7 +122,7 @@ export const Board: React.VFC<Props> = ({ mode, elementCollection, onNewElement,
       top: elem.styleInfo.position.top,
       left: elem.styleInfo.position.left,
       width: `${elem.styleInfo.width}px`,
-      height: `${elem.styleInfo.height}px`
+      height: `${elem.styleInfo.height}px`,
     }
     return (
       <BoardItemContainer key={elem.id} style={style}>
@@ -111,7 +135,7 @@ export const Board: React.VFC<Props> = ({ mode, elementCollection, onNewElement,
             onElementContentChanged({ id: elem.id, title })
           }}
         />
-      </BoardItemContainer >
+      </BoardItemContainer>
     )
   }
 

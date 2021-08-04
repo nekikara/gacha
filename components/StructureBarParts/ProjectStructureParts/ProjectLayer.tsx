@@ -5,7 +5,7 @@ import { KontaID } from '~/interfaces/konta'
 export type ProjectLayerItem = {
   id: KontaID
   active: boolean
-  name: string,
+  name: string
   horizontalLevel: number
   children: ProjectLayerItem[]
 }
@@ -13,10 +13,13 @@ export type ProjectLayerItem = {
 type Props = {
   layer: ProjectLayerItem
   onLayerSelect: (kontaId: KontaID) => void
-} & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+} & React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>
 
 export const ProjectLayer: React.VFC<Props> = ({ layer, onLayerSelect }) => {
-  const kontaCls = clsx("projectLayerInfo", layer.active && 'active')
+  const kontaCls = clsx('projectLayerInfo', layer.active && 'active')
   const handleSelect = () => {
     onLayerSelect(layer.id)
   }
@@ -26,7 +29,7 @@ export const ProjectLayer: React.VFC<Props> = ({ layer, onLayerSelect }) => {
         <div
           className={kontaCls}
           style={{
-            paddingLeft: `${10 * layer.horizontalLevel}px`
+            paddingLeft: `${10 * layer.horizontalLevel}px`,
           }}
           onClick={handleSelect}
         >

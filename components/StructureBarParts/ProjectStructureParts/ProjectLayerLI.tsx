@@ -7,9 +7,7 @@ type Props = {
 export const ProjectLayerLI: React.VFC<Props> = ({ children }) => {
   return (
     <>
-      <li className="projectLayerLIFrame">
-        {children}
-      </li>
+      <li className="projectLayerLIFrame">{children}</li>
       <style jsx>{`
         .projectLayerLIFrame {
           width: 100%;

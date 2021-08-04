@@ -5,8 +5,8 @@ export type PaneID = UUIDv4
 export interface PaneObj {
   id: PaneID
   index: number
-  x: number,
-  w: number,
+  x: number
+  w: number
 }
 
 export interface PaneObjCollection {

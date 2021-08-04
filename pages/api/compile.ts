@@ -1,4 +1,4 @@
-import { ElementCollection } from '~/components/BoardParts/element';
+import { ElementCollection } from '~/components/BoardParts/element'
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { UUIDv4 } from '~/interfaces/uuidv4'
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -23,17 +23,17 @@ export default function handler(
   <title>Document</title>
 </head>
 <body>
-`;
+`
 
     const contents = elementCollection.order.map((elementId: UUIDv4) => {
       const elem = elementCollection.kv[elementId]
       const styles = `
         position: absolute;
-        top: ${elem.position.top}px;
-        left: ${elem.position.left}px;
-        width: ${elem.width}px;
-        height: ${elem.height}px
-      `;
+      `
+      // top: ${elem.position.top}px;
+      // left: ${elem.position.left}px;
+      // width: ${elem.width}px;
+      // height: ${elem.height}px
       if (elem.elementType.type === 'div') {
         return `<div style="${styles}"></div>`
       } else if (elem.elementType.type === 'none') {
@@ -42,13 +42,13 @@ export default function handler(
         const buttonType = elem.elementType
         return `<button type="${buttonType.type}" style="${styles}">${buttonType.content}</button>`
       }
-    });
+    })
 
     const htmlLast = `
 </body>
 </html>
-`;
-    const html = htmlFirst + contents.join('\n') + htmlLast;
+`
+    const html = htmlFirst + contents.join('\n') + htmlLast
 
     res.status(200).json({ html })
   } else {

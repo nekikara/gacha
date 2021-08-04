@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { TabID } from '~/interfaces/tab';
-import { PaneID } from '~/interfaces/pane';
-import { PaneTabRankCollection, Rank } from '~/interfaces/paneTabRank';
+import { useState } from 'react'
+import { TabID } from '~/interfaces/tab'
+import { PaneID } from '~/interfaces/pane'
+import { PaneTabRankCollection, Rank } from '~/interfaces/paneTabRank'
 
 export const usePaneTabRankDB = () => {
-  const [paneTabRankCollection, setPaneTabRankCollection] = useState<PaneTabRankCollection>({ kv: {} });
+  const [paneTabRankCollection, setPaneTabRankCollection] =
+    useState<PaneTabRankCollection>({ kv: {} })
 
   return {
     paneTabRankCollection,
@@ -15,15 +16,15 @@ export const usePaneTabRankDB = () => {
       const newPaneTabRank = {
         paneId,
         tabId,
-        rank: nextRank
+        rank: nextRank,
       }
       setPaneTabRankCollection((old: PaneTabRankCollection) => {
         if (newRequired) {
           old.kv[paneId] = {
             kv: {
-              [nextRank]: newPaneTabRank
+              [nextRank]: newPaneTabRank,
             },
-            last: nextRank
+            last: nextRank,
           }
         } else {
           old.kv[paneId].kv[newPaneTabRank.rank] = newPaneTabRank

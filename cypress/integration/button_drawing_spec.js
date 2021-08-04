@@ -1,26 +1,26 @@
-describe("Button drawing Test", () => {
+describe('Button drawing Test', () => {
   beforeEach(() => {
-    cy.visit("http://localhost:3000");
+    cy.visit('http://localhost:3000')
   })
-  it("Visits the top page", () => {
+  it('Visits the top page', () => {
     cy.get('.headerFrame button[type="button"]')
-  });
+  })
 
-  it("Draws two buttons", () => {
-    cy.get(".boardFrame")
-      .trigger("mousedown", 0, 0)
-      .trigger("mousemove", 50, 100)
-      .trigger("mouseup", 75, 125);
+  it('Draws two buttons', () => {
+    cy.get('.boardFrame')
+      .trigger('mousedown', 0, 0)
+      .trigger('mousemove', 50, 100)
+      .trigger('mouseup', 75, 125)
 
-    cy.get(".boardFrame").then(($board) => {
+    cy.get('.boardFrame').then(($board) => {
       const h = $board.height()
       const w = $board.width()
       const halfH = h / 2
       const halfW = w / 2
-      cy.get(".boardFrame")
-        .trigger("mousedown", halfW, halfH)
-        .trigger("mousemove", halfW - 10, halfH - 10)
-        .trigger("mouseup", halfW - 200, halfH - 100);
+      cy.get('.boardFrame')
+        .trigger('mousedown', halfW, halfH)
+        .trigger('mousemove', halfW - 10, halfH - 10)
+        .trigger('mouseup', halfW - 200, halfH - 100)
     })
-  });
-});
+  })
+})

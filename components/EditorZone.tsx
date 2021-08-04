@@ -24,14 +24,18 @@ type Props = {
 }
 
 export const EditorZone: React.VFC<Props> = ({
-  width, activeKontaObject, paneObjCollection,
-  paneTabRankCollection, tabCollection, platformCollection,
-  onTabSelect
+  width,
+  activeKontaObject,
+  paneObjCollection,
+  paneTabRankCollection,
+  tabCollection,
+  platformCollection,
+  onTabSelect,
 }) => {
   const isEmpty = paneObjCollection.order.length === 0
 
   const genResizeEventHandler = (index: number) => {
-    return (info: { x: number, y: number }) => {
+    return (info: { x: number; y: number }) => {
       console.log(index, info)
     }
   }
@@ -55,7 +59,7 @@ export const EditorZone: React.VFC<Props> = ({
           className="editorPaneFrame"
           style={{
             left: `${paneObj.x}px`,
-            width: `${paneObj.w}px`
+            width: `${paneObj.w}px`,
           }}
         >
           <EditorPane
