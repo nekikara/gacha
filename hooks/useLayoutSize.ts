@@ -59,10 +59,25 @@ export const useLayoutSize = (): LayoutSizeHook => {
       setLayoutWidth((oldLayoutWidth: LayoutWidth) => {
         const strcutureBarBox = oldLayoutWidth.structureBox + diff.x
         const editorBarBox = oldLayoutWidth.editorBox - diff.x
+        const paneLen = oldLayoutWidth.paneObjCollection.order.length
+        const intDiff = Math.floor(diff.x / paneLen)
+        const initial = diff.x % paneLen
+        const paneObjCollection = oldLayoutWidth.paneObjCollection.order.reduce(
+          (acc: PaneObjCollection, paneId, index: number) => {
+            const d = index === 0 ? intDiff + initial : intDiff
+            const obj = acc.kv[paneId]
+            const x = index === 0 ? 0 : obj.x + d
+            acc.kv[paneId] = { ...obj, x, w: obj.w - d }
+            return acc
+          },
+          oldLayoutWidth.paneObjCollection
+        )
+
         return {
           ...oldLayoutWidth,
           structureBox: strcutureBarBox,
           editorBox: editorBarBox,
+          paneObjCollection,
         }
       })
     },
