@@ -1,14 +1,14 @@
 import React, { useEffect, useRef } from 'react'
 
 type Props = {
-  onBarMove: (info: { x: number, y: number }) => void
+  onBarMove: (info: { x: number; y: number }) => void
 }
 
 export const ResizeEmitter: React.VFC<Props> = ({ onBarMove }) => {
-  const handleEl = useRef<HTMLDivElement | null>(null);
+  const handleEl = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
-    let startX = 0;
+    let startX = 0
     const emitMoving = (clientX: number) => {
       const width = clientX - startX
       startX = clientX
@@ -22,13 +22,13 @@ export const ResizeEmitter: React.VFC<Props> = ({ onBarMove }) => {
       window.addEventListener('mousemove', move, true)
       window.addEventListener('mouseup', up, true)
     }
-    let lastWidthUpdatedTime = 0;
+    let lastWidthUpdatedTime = 0
     const move = (e: MouseEvent) => {
       const now = Date.now()
       const diff = now - lastWidthUpdatedTime
       if (diff > 30) {
         emitMoving(e.clientX)
-        lastWidthUpdatedTime = now;
+        lastWidthUpdatedTime = now
       }
     }
     const up = (e: MouseEvent) => {
@@ -48,17 +48,14 @@ export const ResizeEmitter: React.VFC<Props> = ({ onBarMove }) => {
 
   return (
     <>
-      <div
-        ref={handleEl}
-        className="handle"
-      >
-      </div>
+      <div ref={handleEl} className="handle"></div>
       <style jsx>{`
         .handle {
           width: 100%;
           height: 100%;
         }
-        .handle:hover, .handle:active {
+        .handle:hover,
+        .handle:active {
           cursor: ew-resize;
         }
       `}</style>

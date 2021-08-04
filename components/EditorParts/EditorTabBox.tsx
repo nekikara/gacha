@@ -12,12 +12,16 @@ interface Props {
   onTabSelect: (tabId: TabID) => void
 }
 
-export const EditorTabBox: React.VFC<Props> = ({ activeKontaObject, tabs, platformCollection, onTabSelect }) => {
+export const EditorTabBox: React.VFC<Props> = ({
+  activeKontaObject,
+  tabs,
+  platformCollection,
+  onTabSelect,
+}) => {
   const handleTabSelector = (tabId: TabID) => {
     return () => {
       onTabSelect(tabId)
     }
-
   }
   return (
     <>
@@ -27,25 +31,24 @@ export const EditorTabBox: React.VFC<Props> = ({ activeKontaObject, tabs, platfo
           switch (tab.tabObj.type) {
             case 'platform':
               const x = platformCollection.kv[tab.tabObj.id]
-              const isActive = activeKontaObject?.kontaObjectType === 'platform' && activeKontaObject?.id === tab.tabObj.id
+              const isActive =
+                activeKontaObject?.kontaObjectType === 'platform' &&
+                activeKontaObject?.id === tab.tabObj.id
               obj = { id: tab.id, name: x.name, active: isActive }
-              break;
+              break
             default:
-              break;
+              break
           }
           const tabCls = clsx('tabFrame', idx > 0 && 'sep')
-          return !obj
-            ? null
-            : (
-              <div
-                key={obj.id}
-                className={tabCls}
-                onClick={handleTabSelector(tab.id)}
-              >
-                <EditorTabItem tabItem={{ name: obj.name, active: obj.active }} />
-              </div>
-            )
-
+          return !obj ? null : (
+            <div
+              key={obj.id}
+              className={tabCls}
+              onClick={handleTabSelector(tab.id)}
+            >
+              <EditorTabItem tabItem={{ name: obj.name, active: obj.active }} />
+            </div>
+          )
         })}
       </div>
       <style jsx>{`

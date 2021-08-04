@@ -1,9 +1,11 @@
 import React from 'react'
 
-
 type Props = {
   children: React.ReactNode
-} & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+} & React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+>
 
 export const BoardItemContainer: React.VFC<Props> = ({ style, children }) => {
   return (

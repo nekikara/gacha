@@ -3,9 +3,7 @@ import React from 'react'
 export const EditorEmpty: React.VFC = () => {
   return (
     <>
-      <div className='editorEmptyFrame'>
-        Empty
-      </div>
+      <div className="editorEmptyFrame">Empty</div>
       <style jsx>{`
         .editorEmptyFrame {
           position: relative;

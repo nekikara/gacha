@@ -5,7 +5,7 @@ export type SideMenu = 'button'
 
 type Props = {
   mode: SideMenu
-  onChange: (mode: SideMenu) => void;
+  onChange: (mode: SideMenu) => void
 }
 
 export const SideMenuBar: React.VFC<Props> = ({ mode, onChange }) => {

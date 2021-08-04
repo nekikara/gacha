@@ -1,5 +1,5 @@
-import { HTMLTag } from '~/interfaces/htmlTag';
-import { Platform } from '~/interfaces/platform';
+import { HTMLTag } from '~/interfaces/htmlTag'
+import { Platform } from '~/interfaces/platform'
 import { UUIDv4 } from '~/interfaces/uuidv4'
 
 export type KontaID = UUIDv4

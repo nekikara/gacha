@@ -1,15 +1,18 @@
-import { StylerSize, Styler, StylerCollection } from '~/interfaces/styler';
-import { useState } from 'react';
-import { genUUIDv4 } from "~/utils/uuidGen";
+import { StylerSize, Styler, StylerCollection } from '~/interfaces/styler'
+import { useState } from 'react'
+import { genUUIDv4 } from '~/utils/uuidGen'
 
 export type StylerDBHook = {
-  stylerCollection: StylerCollection,
+  stylerCollection: StylerCollection
   addNewStyler: (platform: Styler) => void
   genNewStyler: (size: StylerSize) => Styler
 }
 
 export const useStylerDB = (): StylerDBHook => {
-  const [stylerCollection, setStylerCollection] = useState<StylerCollection>({ kv: {}, order: [] });
+  const [stylerCollection, setStylerCollection] = useState<StylerCollection>({
+    kv: {},
+    order: [],
+  })
   return {
     stylerCollection,
     addNewStyler: (styler: Styler) => {
@@ -22,8 +25,8 @@ export const useStylerDB = (): StylerDBHook => {
     genNewStyler: (size: StylerSize): Styler => {
       return {
         id: genUUIDv4(),
-        ...size
+        ...size,
       }
-    }
+    },
   }
 }

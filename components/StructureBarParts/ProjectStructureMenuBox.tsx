@@ -4,7 +4,9 @@ type Props = {
   onNewPlatformAdd: () => void
 }
 
-export const ProjectStructureMenuBox: React.VFC<Props> = ({ onNewPlatformAdd }) => {
+export const ProjectStructureMenuBox: React.VFC<Props> = ({
+  onNewPlatformAdd,
+}) => {
   const handleMenuSelected = () => {
     onNewPlatformAdd()
   }
@@ -12,9 +14,7 @@ export const ProjectStructureMenuBox: React.VFC<Props> = ({ onNewPlatformAdd }) 
     <>
       <ul className="menuContainer">
         <li className="menuItem">
-          <div onClick={handleMenuSelected}>
-            Add Platform
-          </div>
+          <div onClick={handleMenuSelected}>Add Platform</div>
         </li>
       </ul>
       <style jsx>{`

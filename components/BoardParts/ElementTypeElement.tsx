@@ -9,7 +9,13 @@ type Props = {
   onChange: (title: string) => void
 }
 
-export const ElementTypeElement: React.VFC<Props> = ({ current, elementType, onFocus, onLeave, onChange }) => {
+export const ElementTypeElement: React.VFC<Props> = ({
+  current,
+  elementType,
+  onFocus,
+  onLeave,
+  onChange,
+}) => {
   const [editable, setEditable] = useState<boolean>(false)
 
   const toEditable = (e: React.MouseEvent) => {
@@ -19,12 +25,12 @@ export const ElementTypeElement: React.VFC<Props> = ({ current, elementType, onF
 
   const handleMouseEnter = () => {
     if (current) return
-    onFocus();
+    onFocus()
   }
 
   const handleMouseLeave = () => {
     if (current) return
-    onLeave();
+    onLeave()
   }
 
   const handleContentChange = (e: React.ChangeEvent<HTMLButtonElement>) => {
@@ -48,7 +54,6 @@ export const ElementTypeElement: React.VFC<Props> = ({ current, elementType, onF
       onMouseLeave={handleMouseLeave}
       onInput={handleContentChange}
       dangerouslySetInnerHTML={{ __html: elementType.content }}
-    >
-    </button>
+    ></button>
   )
 }

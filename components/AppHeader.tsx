@@ -15,7 +15,6 @@ export const AppHeader: React.VFC<Props> = ({ onCompile }) => {
             Compile
           </button>
         </nav>
-
       </header>
       <style jsx>{`
         .headerFrame {

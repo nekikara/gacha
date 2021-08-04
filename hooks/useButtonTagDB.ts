@@ -1,15 +1,16 @@
-import { ButtonTag, ButtonTagCollection } from '~/interfaces/buttonTag';
-import { useState } from 'react';
-import { genUUIDv4 } from "~/utils/uuidGen";
+import { ButtonTag, ButtonTagCollection } from '~/interfaces/buttonTag'
+import { useState } from 'react'
+import { genUUIDv4 } from '~/utils/uuidGen'
 
 export type ButtonTagDBHook = {
-  buttonTagCollection: ButtonTagCollection,
+  buttonTagCollection: ButtonTagCollection
   addNewButtonTag: (platform: ButtonTag) => void
   genNewButtonTag: (content: string) => ButtonTag
 }
 
 export const useButtonTagDB = (): ButtonTagDBHook => {
-  const [buttonTagCollection, setButtonTagCollection] = useState<ButtonTagCollection>({ kv: {}, order: [] });
+  const [buttonTagCollection, setButtonTagCollection] =
+    useState<ButtonTagCollection>({ kv: {}, order: [] })
   return {
     buttonTagCollection,
     addNewButtonTag: (buttonTag: ButtonTag) => {
@@ -25,6 +26,6 @@ export const useButtonTagDB = (): ButtonTagDBHook => {
         tagType: 'button',
         content: content,
       }
-    }
+    },
   }
 }

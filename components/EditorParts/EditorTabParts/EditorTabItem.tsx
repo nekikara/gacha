@@ -13,9 +13,7 @@ export const EditorTabItem: React.VFC<Props> = ({ tabItem }) => {
   const itemCls = clsx('editorTabItemFrame', tabItem.active && 'active')
   return (
     <>
-      <div className={itemCls}>
-        {tabItem.name}
-      </div>
+      <div className={itemCls}>{tabItem.name}</div>
       <style jsx>{`
         .editorTabItemFrame {
           user-select: none;

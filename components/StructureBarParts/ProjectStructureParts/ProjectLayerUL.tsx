@@ -2,14 +2,15 @@ import React, { useEffect, useRef, useState } from 'react'
 
 type Props = {
   children: React.ReactNode
-} & React.DetailedHTMLProps<React.HTMLAttributes<HTMLUListElement>, HTMLUListElement>
+} & React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLUListElement>,
+  HTMLUListElement
+>
 
 export const ProjectLayerUL: React.VFC<Props> = ({ children }) => {
   return (
     <>
-      <ul className="projectLayerULFrame">
-        {children}
-      </ul>
+      <ul className="projectLayerULFrame">{children}</ul>
       <style jsx>{`
         .projectLayerULFrame {
           height: 100%;

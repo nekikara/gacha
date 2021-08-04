@@ -8,29 +8,33 @@ export interface PaneInfo {
   index: number
 }
 
-type Props = React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
-  info: PaneInfo,
-  onWidthChange: (info: { x: number, y: number }) => void
+type Props = React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+> & {
+  info: PaneInfo
+  onWidthChange: (info: { x: number; y: number }) => void
   children: React.ReactNode
 }
 
-export const EditorPane: React.VFC<Props> = ({ info, onWidthChange, children }) => {
+export const EditorPane: React.VFC<Props> = ({
+  info,
+  onWidthChange,
+  children,
+}) => {
   const moreThanSecondPane = info.index > 0
   const paneCls = clsx('editorPaneFrame', moreThanSecondPane && 'editorBorder')
-  const handleWidthChange = (info: { x: number, y: number }) => {
+  const handleWidthChange = (info: { x: number; y: number }) => {
     onWidthChange(info)
   }
   return (
     <>
       <div className={paneCls}>
-        {!moreThanSecondPane
-          ? null
-          : (
-            <div className="editorResizer">
-              <ResizeEmitter onBarMove={handleWidthChange} />
-            </div>
-          )
-        }
+        {!moreThanSecondPane ? null : (
+          <div className="editorResizer">
+            <ResizeEmitter onBarMove={handleWidthChange} />
+          </div>
+        )}
         {children}
       </div>
       <style jsx>{`
