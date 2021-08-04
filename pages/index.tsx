@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react'
 import Head from 'next/head'
 import { AppHeader } from '~/components/AppHeader'
 import { SideMenu, SideMenuBar } from '~/components/SideMenuBar'
-import { Board } from '~/components/Board'
 import { UUIDv4 } from '~/interfaces/uuidv4'
 import { StructureBarBox } from '~/components/StructureBarBox'
 import { useLayoutSize } from '~/hooks/useLayoutSize'
@@ -220,12 +219,6 @@ export default function Index() {
               platformCollection={platformDB.platformCollection}
               onTabSelect={handleTabSelect}
             />
-            {/* <Board
-              mode={mode}
-              elementCollection={elementCollection}
-              onNewElement={handleNewElement}
-              onElementContentChanged={handleElementContentChange}
-            /> */}
           </section>
         </main>
       </div>
