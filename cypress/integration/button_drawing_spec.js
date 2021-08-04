@@ -2,11 +2,11 @@ describe('Button drawing Test', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3000')
   })
-  it('Visits the top page', () => {
+  xit('Visits the top page', () => {
     cy.get('.headerFrame button[type="button"]')
   })
 
-  it('Draws two buttons', () => {
+  xit('Draws two buttons', () => {
     cy.get('.boardFrame')
       .trigger('mousedown', 0, 0)
       .trigger('mousemove', 50, 100)
