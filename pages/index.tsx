@@ -211,7 +211,6 @@ export default function Index() {
           </section>
           <section className="content">
             <EditorZone
-              width={layoutSize.layoutWidth.editorBox}
               activeKontaObject={activeKontaObject}
               paneObjCollection={layoutSize.layoutWidth.paneObjCollection}
               paneTabRankCollection={paneTabRankDB.paneTabRankCollection}

@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import React from 'react'
 import { PaneID } from '~/interfaces/pane'
-import { ResizeEmitter } from '../shared/ResizeEmitter'
+import { ResizeEmitter } from '~/components/shared/ResizeEmitter'
 
 export interface PaneInfo {
   id: PaneID
