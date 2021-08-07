@@ -6,6 +6,7 @@ import { PlatformCollection } from '~/interfaces/platform'
 import { TabCollection, TabID } from '~/interfaces/tab'
 import { EditorPane } from './EditorPaneBoxParts/EditorPane'
 import { EditorTabBox } from './EditorPaneBoxParts/EditorTabBox'
+import { PlatformEditor } from './EditorPaneBoxParts/PlatformEditor'
 
 interface Props {
   activeKontaObject: KontaObject | null
@@ -63,6 +64,7 @@ export const EditorPaneBox: React.VFC<Props> = ({
                 platformCollection={platformCollection}
                 onTabSelect={handleTabSelect}
               />
+              <PlatformEditor />
             </EditorPane>
           </div>
         )
