@@ -8,9 +8,8 @@ import { useLayoutSize } from '~/hooks/useLayoutSize'
 import { usePlatformDB } from '~/hooks/usePlatformDB'
 import { useHTMLTagDB } from '~/hooks/useHTMLTagDB'
 import { useKontaDB } from '~/hooks/useKontaDB'
-import { Element, ElementCollection } from '~/components/BoardParts/element'
+import { ElementCollection } from '~/components/BoardParts/element'
 import { useButtonTagDB } from '~/hooks/useButtonTagDB'
-import { StylerSize } from '~/interfaces/styler'
 import { useStylerDB } from '~/hooks/useStylerDB'
 import { EditorZone } from '~/components/EditorZone'
 import { useActiveKontaHistoryDB } from '~/hooks/useActiveKontaHistoryDB '
@@ -120,35 +119,6 @@ export default function Index() {
     }
   }
 
-  const handleNewElement = (elm: Element) => {
-    if (elm.elementType.type === 'button') {
-      const buttonTag = buttonTagDB.genNewButtonTag(elm.elementType.content)
-      buttonTagDB.addNewButtonTag(buttonTag)
-      const stylerSize: StylerSize = {
-        position: elm.styleInfo.position,
-        height: elm.styleInfo.height,
-        width: elm.styleInfo.width,
-      }
-      const styler = stylerDB.genNewStyler(stylerSize)
-      stylerDB.addNewStyler(styler)
-      const htmlTag = htmlTagDB.genNewHTMLTag(buttonTag, styler)
-      htmlTagDB.addNewHTMLTag(htmlTag)
-      const platformId = platformDB.platformCollection.order[0]
-      const platform = platformDB.platformCollection.kv[platformId]
-      const parentKonta = kontaDB.findKonta({
-        id: platform.id,
-        type: 'platform',
-      })
-      const newKonta = kontaDB.genNewKonta(
-        htmlTag,
-        Number(parentKonta?.level) + 1
-      )
-      kontaDB.addNewKonta(newKonta, parentKonta)
-    }
-  }
-  const handleElementContentChange = (info: { id: UUIDv4; title: string }) => {
-    console.log('update element', info)
-  }
   const handleActiveKontaChange = (kontaId: KontaID) => {
     activeKontaHistoryDB.addNew(kontaId)
     const kontaObj = kontaDB.findKontaById(kontaId)
@@ -193,7 +163,6 @@ export default function Index() {
       platformToolCreation.menuId === 1
         ? htmlFileDB.genNewHTMLFile(platformToolCreation.position)
         : null
-    console.log('==== htmlFile', htmlFile)
     if (parentKonta && htmlFile) {
       const newKonta = kontaDB.genNewKonta(htmlFile, parentKonta?.level + 1)
       htmlFileDB.addNewHTMLFile(htmlFile)
