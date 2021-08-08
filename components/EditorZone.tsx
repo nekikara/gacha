@@ -1,12 +1,15 @@
 import React from 'react'
+import { HTMLFileCollection } from '~/interfaces/htmlFile'
 import { KontaObject } from '~/interfaces/konta'
 import { PaneID, PaneObj } from '~/interfaces/pane'
 import { PaneTabRankCollection } from '~/interfaces/paneTabRank'
 import { PlatformCollection } from '~/interfaces/platform'
 import { TabCollection, TabID } from '~/interfaces/tab'
 import { EditorEmpty } from './EditorParts/EditorEmpty'
-import { EditorPane } from './EditorParts/EditorPane'
-import { EditorTabBox } from './EditorParts/EditorTabBox'
+import {
+  EditorPaneBox,
+  PlatfromToolCreation,
+} from './EditorParts/EditorPaneBox'
 
 interface PaneCollectionFroEditorZone {
   kv: Record<PaneID, PaneObj>
@@ -14,85 +17,61 @@ interface PaneCollectionFroEditorZone {
 }
 
 type Props = {
-  width: number
   activeKontaObject: KontaObject | null
   paneObjCollection: PaneCollectionFroEditorZone
   paneTabRankCollection: PaneTabRankCollection
   tabCollection: TabCollection
   platformCollection: PlatformCollection
+  htmlFileCollection: HTMLFileCollection
   onTabSelect: (tabId: TabID) => void
+  onNewPlatformTool: (platformToolCreation: PlatfromToolCreation) => void
 }
 
 export const EditorZone: React.VFC<Props> = ({
-  width,
   activeKontaObject,
   paneObjCollection,
   paneTabRankCollection,
   tabCollection,
   platformCollection,
+  htmlFileCollection,
   onTabSelect,
+  onNewPlatformTool,
 }) => {
   const isEmpty = paneObjCollection.order.length === 0
 
-  const genResizeEventHandler = (index: number) => {
-    return (info: { x: number; y: number }) => {
-      console.log(index, info)
-    }
-  }
   const handleTabSelect = (tabId: TabID) => {
     onTabSelect(tabId)
   }
 
-  const renderPanes = () => {
-    return paneObjCollection.order.map((paneId: PaneID) => {
-      const paneObj = paneObjCollection.kv[paneId]
-      const ranks = paneTabRankCollection.kv[paneId]
-      const tabs = []
-      for (let i = 1; i <= ranks.last; i++) {
-        const rank = ranks.kv[i]
-        const tab = tabCollection.kv[rank.tabId]
-        tabs.push(tab)
-      }
-      return (
-        <div
-          key={paneObj.id}
-          className="editorPaneFrameInZone"
-          style={{
-            left: `${paneObj.x}px`,
-            width: `${paneObj.w}px`,
-          }}
-        >
-          <EditorPane
-            info={paneObj}
-            onWidthChange={genResizeEventHandler(paneObj.index)}
-          >
-            <EditorTabBox
-              activeKontaObject={activeKontaObject}
-              tabs={tabs}
-              platformCollection={platformCollection}
-              onTabSelect={handleTabSelect}
-            />
-          </EditorPane>
-        </div>
-      )
-    })
+  const handleNewPlatformTool = (
+    platformToolCreation: PlatfromToolCreation
+  ) => {
+    onNewPlatformTool(platformToolCreation)
   }
 
   return (
     <>
       <div className="editorFrame">
-        {isEmpty ? <EditorEmpty /> : renderPanes()}
+        {isEmpty ? (
+          <EditorEmpty />
+        ) : (
+          <EditorPaneBox
+            activeKontaObject={activeKontaObject}
+            paneObjCollection={paneObjCollection}
+            paneTabRankCollection={paneTabRankCollection}
+            platformCollection={platformCollection}
+            tabCollection={tabCollection}
+            htmlFileCollection={htmlFileCollection}
+            onTabSelect={handleTabSelect}
+            onNewPlatformTool={handleNewPlatformTool}
+          />
+        )}
       </div>
       <style jsx>{`
         .editorFrame {
           position: relative;
           display: flex;
           width: 100%;
-          height: 100%;
-        }
-        .editorPaneFrameInZone {
-          position: absolute;
-          top: 0;
           height: 100%;
         }
       `}</style>

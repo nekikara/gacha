@@ -12,7 +12,7 @@ describe('StructureBar Resize Test', () => {
   })
 
   context('Without a pane', () => {
-    xit('resizes the StructureBox', () => {
+    it('resizes the StructureBox', () => {
       cy.get('.structureBar .handle').then(($handle) => {
         const startX = $handle.width() / 2
         const startBarW = 250

@@ -55,7 +55,7 @@ export const EditorTabBox: React.VFC<Props> = ({
         .editorTabBoxFrame {
           position: relative;
           width: 100%;
-          height: 32px;
+          height: 100%;
           background-color: rgba(128, 128, 128, 1);
           display: flex;
           align-items: center;

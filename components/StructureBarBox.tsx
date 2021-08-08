@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { HTMLFileCollection } from '~/interfaces/htmlFile'
 import { HTMLTagCollection } from '~/interfaces/htmlTag'
 import {
   KontaCollection,
@@ -18,6 +19,7 @@ type Props = {
   kontaCollection: KontaCollection
   platformCollection: PlatformCollection
   htmlTagCollection: HTMLTagCollection
+  htmlFileCollection: HTMLFileCollection
   onWidthChanged: (diff: { x: number; y: number }) => void
   onActiveKontaChange: (kontaId: KontaID) => void
   onPlatformAdd: () => void
@@ -28,6 +30,7 @@ export const StructureBarBox: React.VFC<Props> = ({
   kontaCollection,
   platformCollection,
   htmlTagCollection,
+  htmlFileCollection,
   onWidthChanged,
   onActiveKontaChange,
   onPlatformAdd,
@@ -56,6 +59,8 @@ export const StructureBarBox: React.VFC<Props> = ({
     }): KontaObject {
       if (obj.type === 'platform') {
         return platformCollection.kv[obj.id]
+      } else if (obj.type === 'html_file') {
+        return htmlFileCollection.kv[obj.id]
       } else {
         return htmlTagCollection.kv[obj.id]
       }
