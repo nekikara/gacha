@@ -3,7 +3,7 @@ import { UUIDv4 } from '~/interfaces/uuidv4'
 import { KontaID } from './konta'
 
 export type TabID = UUIDv4
-export type TabObjectType = 'platform'
+export type TabObjectType = 'platform' | 'html_file'
 export type TabObjectID = PlatformID
 export interface TabObject {
   type: TabObjectType

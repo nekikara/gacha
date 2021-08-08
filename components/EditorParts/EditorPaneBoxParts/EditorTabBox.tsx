@@ -1,13 +1,15 @@
 import clsx from 'clsx'
 import React from 'react'
+import { HTMLFileCollection } from '~/interfaces/htmlFile'
 import { KontaObject } from '~/interfaces/konta'
 import { PlatformCollection } from '~/interfaces/platform'
-import { Tab, TabID } from '~/interfaces/tab'
+import { Tab, TabID, TabObject } from '~/interfaces/tab'
 import { EditorTabItem } from './EditorTabParts/EditorTabItem'
 
 interface Props {
   tabs: Tab[]
   platformCollection: PlatformCollection
+  htmlFileCollection: HTMLFileCollection
   activeKontaObject: KontaObject | null
   onTabSelect: (tabId: TabID) => void
 }
@@ -16,12 +18,24 @@ export const EditorTabBox: React.VFC<Props> = ({
   activeKontaObject,
   tabs,
   platformCollection,
+  htmlFileCollection,
   onTabSelect,
 }) => {
   const handleTabSelector = (tabId: TabID) => {
     return () => {
       onTabSelect(tabId)
     }
+  }
+  const getKontaObj = (tabObj: TabObject): KontaObject => {
+    let collection = null
+    switch (tabObj.type) {
+      case 'platform':
+        collection = platformCollection
+        break
+      case 'html_file':
+        collection = htmlFileCollection
+    }
+    return collection!.kv[tabObj.id]
   }
   return (
     <>
@@ -30,11 +44,12 @@ export const EditorTabBox: React.VFC<Props> = ({
           let obj = null
           switch (tab.tabObj.type) {
             case 'platform':
-              const x = platformCollection.kv[tab.tabObj.id]
+            case 'html_file':
+              const kontaObj = getKontaObj(tab.tabObj)
               const isActive =
-                activeKontaObject?.kontaObjectType === 'platform' &&
+                activeKontaObject?.kontaObjectType === tab.tabObj.type &&
                 activeKontaObject?.id === tab.tabObj.id
-              obj = { id: tab.id, name: x.name, active: isActive }
+              obj = { id: tab.id, name: kontaObj.name, active: isActive }
               break
             default:
               break

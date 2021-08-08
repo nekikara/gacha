@@ -80,6 +80,9 @@ export default function Index() {
       case 'platform':
         kontaObj = platformDB.platformCollection.kv[konta.obj.id]
         break
+      case 'html_file':
+        kontaObj = htmlFileDB.htmlFileCollection.kv[konta.obj.id]
+        break
       case 'html_tag':
         kontaObj = htmlTagDB.htmlTagCollection.kv[konta.obj.id]
         break
@@ -90,6 +93,7 @@ export default function Index() {
     activeKontaHistoryDB.latest,
     platformDB.platformCollection.kv,
     htmlTagDB.htmlTagCollection.kv,
+    htmlFileDB.htmlFileCollection.kv,
   ])
 
   const handleCompile = async () => {
@@ -124,14 +128,16 @@ export default function Index() {
     const kontaObj = kontaDB.findKontaById(kontaId)
     switch (kontaObj?.obj.type) {
       case 'platform':
+      case 'html_file':
+        const objType = kontaObj!.obj!.type
         const paneId = layoutSize.addNewPaneIfFirst()
         const alreadyTab = tabDB.hasAlready(kontaId, {
-          type: 'platform',
+          type: objType,
           id: kontaObj!.obj.id,
         })
         if (!alreadyTab) {
           const tabId = tabDB.addNewTab(kontaId, {
-            type: 'platform',
+            type: objType,
             id: kontaObj!.obj.id,
           })
           paneTabRankDB.addNewPaneTabRank(paneId, tabId)
