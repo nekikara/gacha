@@ -58,13 +58,17 @@ export const EditorPaneBox: React.VFC<Props> = ({
               info={paneObj}
               onWidthChange={genResizeEventHandler(paneObj.index)}
             >
-              <EditorTabBox
-                activeKontaObject={activeKontaObject}
-                tabs={tabs}
-                platformCollection={platformCollection}
-                onTabSelect={handleTabSelect}
-              />
-              <PlatformEditor />
+              <div className="tabFrame">
+                <EditorTabBox
+                  activeKontaObject={activeKontaObject}
+                  tabs={tabs}
+                  platformCollection={platformCollection}
+                  onTabSelect={handleTabSelect}
+                />
+              </div>
+              <div className="editor">
+                <PlatformEditor />
+              </div>
             </EditorPane>
           </div>
         )
@@ -74,6 +78,14 @@ export const EditorPaneBox: React.VFC<Props> = ({
           position: absolute;
           top: 0;
           height: 100%;
+        }
+        .tabFrame {
+          width: 100%;
+          height: 32px;
+        }
+        .editor {
+          width: 100%;
+          height: calc(100% - 32px);
         }
       `}</style>
     </>

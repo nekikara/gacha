@@ -17,6 +17,7 @@ export const PlatformToolPallet: React.VFC<Props> = ({ onSelect }) => {
 
   const handleSelect = (toolId: PlatformToolID) => {
     return (ev: React.DragEvent) => {
+      console.log('event', ev)
       ev.dataTransfer.setData('text/plain', `${toolId}`)
       ev.dataTransfer.setDragImage(
         img,
@@ -52,7 +53,7 @@ export const PlatformToolPallet: React.VFC<Props> = ({ onSelect }) => {
           position: relative;
           width: 100%;
           height: 100%;
-          background-color: rgba(100, 100, 100, 1);
+          background-color: rgba(0, 100, 255, 1);
         }
         .tools {
           width: 100%;

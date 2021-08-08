@@ -13,9 +13,11 @@ export const PlatformEditor: React.VFC<Props> = ({}) => {
   }
   const handleDrop = (ev: React.DragEvent) => {
     ev.preventDefault()
+    console.log('===============')
     if (boardRef.current) {
       const boardOrigin = boardRef.current.getBoundingClientRect()
       const data = ev.dataTransfer.getData('text')
+      console.log(data)
       const position = { x: ev.clientX, y: ev.clientY }
       const insertingPosition = {
         x: position.x - boardOrigin.x,
