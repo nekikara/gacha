@@ -1,11 +1,15 @@
 import React from 'react'
+import { HTMLFileCollection } from '~/interfaces/htmlFile'
 import { KontaObject } from '~/interfaces/konta'
 import { PaneID, PaneObj } from '~/interfaces/pane'
 import { PaneTabRankCollection } from '~/interfaces/paneTabRank'
 import { PlatformCollection } from '~/interfaces/platform'
 import { TabCollection, TabID } from '~/interfaces/tab'
 import { EditorEmpty } from './EditorParts/EditorEmpty'
-import { EditorPaneBox } from './EditorParts/EditorPaneBox'
+import {
+  EditorPaneBox,
+  PlatfromToolCreation,
+} from './EditorParts/EditorPaneBox'
 
 interface PaneCollectionFroEditorZone {
   kv: Record<PaneID, PaneObj>
@@ -18,7 +22,9 @@ type Props = {
   paneTabRankCollection: PaneTabRankCollection
   tabCollection: TabCollection
   platformCollection: PlatformCollection
+  htmlFileCollection: HTMLFileCollection
   onTabSelect: (tabId: TabID) => void
+  onNewPlatformTool: (platformToolCreation: PlatfromToolCreation) => void
 }
 
 export const EditorZone: React.VFC<Props> = ({
@@ -27,12 +33,20 @@ export const EditorZone: React.VFC<Props> = ({
   paneTabRankCollection,
   tabCollection,
   platformCollection,
+  htmlFileCollection,
   onTabSelect,
+  onNewPlatformTool,
 }) => {
   const isEmpty = paneObjCollection.order.length === 0
 
   const handleTabSelect = (tabId: TabID) => {
     onTabSelect(tabId)
+  }
+
+  const handleNewPlatformTool = (
+    platformToolCreation: PlatfromToolCreation
+  ) => {
+    onNewPlatformTool(platformToolCreation)
   }
 
   return (
@@ -47,7 +61,9 @@ export const EditorZone: React.VFC<Props> = ({
             paneTabRankCollection={paneTabRankCollection}
             platformCollection={platformCollection}
             tabCollection={tabCollection}
+            htmlFileCollection={htmlFileCollection}
             onTabSelect={handleTabSelect}
+            onNewPlatformTool={handleNewPlatformTool}
           />
         )}
       </div>

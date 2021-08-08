@@ -14,5 +14,9 @@ describe('Platform Editor Test', () => {
       dataTransfer,
       eventConstructor: 'DragEvent',
     })
+    cy.get('.board .htmlFile')
+      .should('have.length', 1)
+      .and('have.text', 'HTMLFile1')
+    cy.get('.projectLayerInfo').should('have.length', 2)
   })
 })

@@ -1,20 +1,30 @@
 import React from 'react'
-import { KontaObject } from '~/interfaces/konta'
+import { HTMLFileCollection, HTMLFileID } from '~/interfaces/htmlFile'
+import { KontaObject, KontaObjectIdentity } from '~/interfaces/konta'
 import { PaneID, PaneObjCollection } from '~/interfaces/pane'
 import { PaneTabRankCollection } from '~/interfaces/paneTabRank'
 import { PlatformCollection } from '~/interfaces/platform'
+import { PlatformToolID } from '~/interfaces/platformTool'
+import { Position } from '~/interfaces/position'
 import { TabCollection, TabID } from '~/interfaces/tab'
 import { EditorPane } from './EditorPaneBoxParts/EditorPane'
 import { EditorTabBox } from './EditorPaneBoxParts/EditorTabBox'
 import { PlatformEditor } from './EditorPaneBoxParts/PlatformEditor'
 
+export interface PlatfromToolCreation {
+  kontaObjectIdentity: KontaObjectIdentity
+  menuId: PlatformToolID
+  position: Position
+}
 interface Props {
   activeKontaObject: KontaObject | null
   paneObjCollection: PaneObjCollection
   paneTabRankCollection: PaneTabRankCollection
   tabCollection: TabCollection
   platformCollection: PlatformCollection
+  htmlFileCollection: HTMLFileCollection
   onTabSelect: (tabId: TabID) => void
+  onNewPlatformTool: (platformToolCreation: PlatfromToolCreation) => void
 }
 
 export const EditorPaneBox: React.VFC<Props> = ({
@@ -23,8 +33,14 @@ export const EditorPaneBox: React.VFC<Props> = ({
   paneTabRankCollection,
   platformCollection,
   tabCollection,
+  htmlFileCollection,
   onTabSelect,
+  onNewPlatformTool,
 }) => {
+  const htmlFiles = htmlFileCollection.order.map((htmlFileId: HTMLFileID) => {
+    return htmlFileCollection.kv[htmlFileId]
+  })
+
   const genResizeEventHandler = (index: number) => {
     return (info: { x: number; y: number }) => {
       console.log(index, info)
@@ -33,6 +49,20 @@ export const EditorPaneBox: React.VFC<Props> = ({
 
   const handleTabSelect = (tabId: TabID) => {
     onTabSelect(tabId)
+  }
+
+  const handlePlatformToolAdd = (
+    menuId: PlatformToolID,
+    position: Position
+  ) => {
+    onNewPlatformTool({
+      kontaObjectIdentity: {
+        id: activeKontaObject!.id,
+        type: activeKontaObject!.kontaObjectType,
+      },
+      menuId,
+      position,
+    })
   }
   return (
     <>
@@ -67,7 +97,10 @@ export const EditorPaneBox: React.VFC<Props> = ({
                 />
               </div>
               <div className="editor">
-                <PlatformEditor />
+                <PlatformEditor
+                  htmlFiles={htmlFiles}
+                  onPlatformToolAdd={handlePlatformToolAdd}
+                />
               </div>
             </EditorPane>
           </div>

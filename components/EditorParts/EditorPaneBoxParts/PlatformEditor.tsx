@@ -1,31 +1,48 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { HTMLFile } from '~/interfaces/htmlFile'
 import { PlatformToolID } from '~/interfaces/platformTool'
+import { Position } from '~/interfaces/position'
 import { PlatformToolPallet } from './PlatformEditorParts/PlatformToolPallet'
 
-interface Props {}
+interface Props {
+  htmlFiles: HTMLFile[]
+  onPlatformToolAdd: (menuId: PlatformToolID, position: Position) => void
+}
 
-export const PlatformEditor: React.VFC<Props> = ({}) => {
-  const [htmlFiles, setHTMLFiles] = useState<{ x: number; y: number }[]>([])
+export const PlatformEditor: React.VFC<Props> = ({
+  htmlFiles,
+  onPlatformToolAdd,
+}) => {
   const boardRef = useRef<HTMLDivElement | null>(null)
+  const [clientPositionAsOrigin, setClientPositionAsOrigin] =
+    useState<Position>({ x: 0, y: 0 })
+
+  useEffect(() => {
+    if (boardRef.current) {
+      const boardOrigin = boardRef.current.getBoundingClientRect()
+      const half = { w: boardOrigin.width / 2, h: boardOrigin.height / 2 }
+      setClientPositionAsOrigin(() => ({ x: half.w, y: half.h }))
+    }
+  }, [boardRef])
 
   const handleDragOver = (ev: React.DragEvent) => {
     ev.preventDefault()
   }
   const handleDrop = (ev: React.DragEvent) => {
     ev.preventDefault()
-    console.log('===============')
     if (boardRef.current) {
-      const boardOrigin = boardRef.current.getBoundingClientRect()
       const data = ev.dataTransfer.getData('text')
-      console.log(data)
-      const position = { x: ev.clientX, y: ev.clientY }
-      const insertingPosition = {
-        x: position.x - boardOrigin.x,
-        y: position.y - boardOrigin.y,
+      const menuId = parseInt(data) as PlatformToolID
+      const boardOrigin = boardRef.current.getBoundingClientRect()
+      const position = {
+        x: ev.clientX - boardOrigin.left,
+        y: ev.clientY - boardOrigin.top,
       }
-      setHTMLFiles((old) => {
-        return [...old, insertingPosition]
-      })
+      const insertingPosition = {
+        x: position.x - clientPositionAsOrigin.x,
+        y: position.y - clientPositionAsOrigin.y,
+      }
+      onPlatformToolAdd(menuId, insertingPosition)
     }
   }
   return (
@@ -37,17 +54,22 @@ export const PlatformEditor: React.VFC<Props> = ({}) => {
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >
-          {htmlFiles.map((htmlFile: { x: number; y: number }, idx: number) => {
+          {htmlFiles.map((htmlFile: HTMLFile, idx: number) => {
             return (
               <div
-                key={`${htmlFile.x}_${htmlFile.y}_${idx}`}
+                key={`${htmlFile.position.x}_${htmlFile.position.y}_${idx}`}
                 className="htmlFile"
                 style={{
-                  top: `${htmlFile.y - 50}px`,
-                  left: `${htmlFile.x - 100}px`,
-                  backgroundColor: '#FF0000',
+                  top: `${
+                    htmlFile.position.y + clientPositionAsOrigin.y - 50
+                  }px`,
+                  left: `${
+                    htmlFile.position.x + clientPositionAsOrigin.x - 100
+                  }px`,
                 }}
-              ></div>
+              >
+                {htmlFile.name}
+              </div>
             )
           })}
         </div>
@@ -73,6 +95,11 @@ export const PlatformEditor: React.VFC<Props> = ({}) => {
           position: absolute;
           width: 200px;
           height: 100px;
+          border: 1px solid rgb(100, 100, 100);
+          border-radius: 8px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
         .toolPallet {
           height: 100%;

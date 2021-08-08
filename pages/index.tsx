@@ -18,10 +18,13 @@ import { KontaID, KontaObject } from '~/interfaces/konta'
 import { useTabDB } from '~/hooks/useTabDB'
 import { usePaneTabRankDB } from '~/hooks/usePaneTabRankDB'
 import { TabID } from '~/interfaces/tab'
+import { PlatfromToolCreation } from '~/components/EditorParts/EditorPaneBox'
+import { useHTMLFileDB } from '~/hooks/useHTMLFileDB'
 
 export default function Index() {
   const [mode, setMode] = useState<SideMenu>('button')
   const [activeKontaObject, setKontaObject] = useState<KontaObject | null>(null)
+  // DB
   const stylerDB = useStylerDB()
   const buttonTagDB = useButtonTagDB()
   const htmlTagDB = useHTMLTagDB()
@@ -31,6 +34,8 @@ export default function Index() {
   const layoutSize = useLayoutSize()
   const tabDB = useTabDB()
   const paneTabRankDB = usePaneTabRankDB()
+  const htmlFileDB = useHTMLFileDB()
+
   const elementCollection = useMemo(() => {
     const htmlTagC = htmlTagDB.htmlTagCollection
     const elms = htmlTagC.order.reduce(
@@ -131,8 +136,8 @@ export default function Index() {
       const platformId = platformDB.platformCollection.order[0]
       const platform = platformDB.platformCollection.kv[platformId]
       const parentKonta = kontaDB.findKonta({
-        kontaObjectId: platform.id,
-        kontaObjectType: 'platform',
+        id: platform.id,
+        type: 'platform',
       })
       const newKonta = kontaDB.genNewKonta(
         htmlTag,
@@ -178,6 +183,26 @@ export default function Index() {
     addNewPlatform()
   }
 
+  const handleNewPlatformTool = (
+    platformToolCreation: PlatfromToolCreation
+  ) => {
+    const parentKonta = kontaDB.findKonta(
+      platformToolCreation.kontaObjectIdentity
+    )
+    const htmlFile =
+      platformToolCreation.menuId === 1
+        ? htmlFileDB.genNewHTMLFile(platformToolCreation.position)
+        : null
+    console.log('==== htmlFile', htmlFile)
+    if (parentKonta && htmlFile) {
+      const newKonta = kontaDB.genNewKonta(htmlFile, parentKonta?.level + 1)
+      htmlFileDB.addNewHTMLFile(htmlFile)
+      kontaDB.addNewKonta(newKonta, parentKonta)
+    } else {
+      throw new Error('Cannot new platform tool')
+    }
+  }
+
   return (
     <>
       <div className="container">
@@ -204,6 +229,7 @@ export default function Index() {
               kontaCollection={kontaDB.kontaCollection}
               platformCollection={platformDB.platformCollection}
               htmlTagCollection={htmlTagDB.htmlTagCollection}
+              htmlFileCollection={htmlFileDB.htmlFileCollection}
               onWidthChanged={layoutSize.changeStructureBarWidth}
               onActiveKontaChange={handleActiveKontaChange}
               onPlatformAdd={handleNewPlatform}
@@ -216,7 +242,9 @@ export default function Index() {
               paneTabRankCollection={paneTabRankDB.paneTabRankCollection}
               tabCollection={tabDB.tabCollection}
               platformCollection={platformDB.platformCollection}
+              htmlFileCollection={htmlFileDB.htmlFileCollection}
               onTabSelect={handleTabSelect}
+              onNewPlatformTool={handleNewPlatformTool}
             />
           </section>
         </main>
