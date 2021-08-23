@@ -9,6 +9,7 @@ import { Position } from '~/interfaces/position'
 import { TabCollection, TabID } from '~/interfaces/tab'
 import { EditorPane } from './EditorPaneBoxParts/EditorPane'
 import { EditorTabBox } from './EditorPaneBoxParts/EditorTabBox'
+import { HTMLFileEditor } from './EditorPaneBoxParts/HTMLFileEditor'
 import { PlatformEditor } from './EditorPaneBoxParts/PlatformEditor'
 
 export interface PlatfromToolCreation {
@@ -93,14 +94,19 @@ export const EditorPaneBox: React.VFC<Props> = ({
                   activeKontaObject={activeKontaObject}
                   tabs={tabs}
                   platformCollection={platformCollection}
+                  htmlFileCollection={htmlFileCollection}
                   onTabSelect={handleTabSelect}
                 />
               </div>
               <div className="editor">
-                <PlatformEditor
-                  htmlFiles={htmlFiles}
-                  onPlatformToolAdd={handlePlatformToolAdd}
-                />
+                {activeKontaObject?.kontaObjectType === 'platform' ? (
+                  <PlatformEditor
+                    htmlFiles={htmlFiles}
+                    onPlatformToolAdd={handlePlatformToolAdd}
+                  />
+                ) : (
+                  <HTMLFileEditor />
+                )}
               </div>
             </EditorPane>
           </div>
